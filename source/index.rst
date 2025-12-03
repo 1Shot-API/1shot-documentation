@@ -3,12 +3,12 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-.. image:: ./_static/welcome-banner-light.jpg
+.. image:: ./_static/welcome-banner-light.png
    :alt: 1Shot API
    :align: center
    :class: only-light
 
-.. image:: ./_static/welcome-banner-dark.jpg
+.. image:: ./_static/welcome-banner-dark.png
    :alt: 1Shot API
    :align: center
    :class: only-dark
