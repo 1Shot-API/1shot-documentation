@@ -3,12 +3,12 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-.. image:: ./_static/smart-tools-for-smart-contracts-light.jpg
+.. image:: ./_static/welcome-banner-light.jpg
    :alt: 1Shot API
    :align: center
    :class: only-light
 
-.. image:: ./_static/smart-tools-for-smart-contracts-dark.jpg
+.. image:: ./_static/welcome-banner-dark.jpg
    :alt: 1Shot API
    :align: center
    :class: only-dark
