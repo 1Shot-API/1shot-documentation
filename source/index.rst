@@ -32,7 +32,7 @@ Welcome to 1Shot API
 How It Works
 ------------
 
-.. image:: ./_static/how-it-works.light.png
+.. image:: ./_static/how-it-works-light.png
    :alt: 1Shot API
    :align: center
    :class: only-light
