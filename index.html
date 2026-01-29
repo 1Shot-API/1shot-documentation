@@ -17,7 +17,7 @@
         gtag('config', 'G-WNFJCLZDV3');
     </script>
     
-    <title>Welcome to 1Shot API! &#8212; 1Shot Docs</title>
+    <title>Welcome to 1Shot API &#8212; 1Shot Docs</title>
   
   
   
@@ -421,17 +421,16 @@
   <img alt="1Shot API" class="align-center only-light" src="_images/welcome-banner-light.png" />
 <img alt="1Shot API" class="align-center only-dark" src="_images/welcome-banner-dark.png" />
 <br /><section id="welcome-to-1shot-api">
-<h1>Welcome to 1Shot API!<a class="headerlink" href="#welcome-to-1shot-api" title="Link to this heading">#</a></h1>
+<h1>Welcome to 1Shot API<a class="headerlink" href="#welcome-to-1shot-api" title="Link to this heading">#</a></h1>
 <div class="video_wrapper align-center" style="text-align: center">
 <iframe allowfullscreen="true" src="https://www.youtube.com/embed/qsawSR3tOSs" style="border: 0; height: 345px; width: 560px">
-</iframe></div><br /><p><a class="reference external" href="https://1shotapi.com">1Shot API</a> is an automation-focused and enterprise-grade account abstraction and transaction service for the Ethereum mainnet and L2 ecosystem
-(Binance and Avalanche supported as well). It provides a simple REST API to trigger state-changing smart contract transactions (as well as smart contract reads) on a target blockchain network with
-a single POST call. 1Shot API can also be used in a completely non-custodial fashion by using its <a class="reference external" href="/basics/wallets.html#account-delegation">delegation feature</a>, allowing you to connect your self-custodied wallet to the 1Shot API service while retaining control over your private keys.</p>
-<section id="architecture">
-<h2>Architecture<a class="headerlink" href="#architecture" title="Link to this heading">#</a></h2>
-<br /><img alt="1Shot API Architecture" class="align-center" src="_images/1shot-architecture.png" />
-<br /><p>1Shot API is not an RPC provider, but an abstraction layer on top of typical RPC providers (like Infura, Alchemy or Ankr). In fact, depending on your use case you may not even need an RPC provider as we handle the full transaction lifecycle with real-time webhook callbacks on the final state of your transactions. 1Shot API allows you to read from and write to smart contracts without the need of importing web3 clients like viem or ethers.js into your source code. This lets you focus on the logic specific to your application while 1Shot API handles the complexities of data types, contract ABIs, signers and private key security, and nonce cohesion for you.</p>
-<p>The 1Shot API service is designed to handle heavy request traffic. If your product has many users generating onchain actions all at once, 1Shot API ensures all of your transactions will make it to the chain quickly and gas efficiently. 1Shot API greatly simplifies the technical overhead of adding digital assets or on-chain logic to any application, bot, or agent, regardless of the language your application is written in. Additionally, with its powerful team &amp; role management features, 1Shot API can scale with your product as your team and user base grows from proof-of-concept to enterprise scale.</p>
+</iframe></div><br /><p><a class="reference external" href="https://1shotapi.com">1Shot API</a> is an enterprise-grade account abstraction and transaction management service for the Ethereum mainnet and L2 ecosystem (Binance and Avalanche supported as well). It provides a simple REST API to trigger state-changing smart contract transactions (as well as smart contract reads) on a target blockchain network with a single POST call. 1Shot API can also be used in a completely non-custodial fashion by using its <a class="reference external" href="/basics/wallets.html#account-delegation">delegation feature</a>, allowing you to connect your self-custodial wallet to the 1Shot API service while retaining control over your private keys. 1Shot API also provides an MCP interface via its <a class="reference external" href="/prompts/index.html">1Shot Prompts</a> feature for AI-driven development of new onchain workflows and products.</p>
+<section id="how-it-works">
+<h2>How It Works<a class="headerlink" href="#how-it-works" title="Link to this heading">#</a></h2>
+<img alt="1Shot API" class="align-center only-light" src="_static/how-it-works.light.png" />
+<img alt="1Shot API" class="align-center only-dark" src="_static/how-it-works-dark.png" />
+<br /><p>1Shot API is not an RPC provider, it is a customizable transaction relayer service which handles the full transaction lifecycle with real-time webhook callbacks on the final state of your application’s transactions. 1Shot API allows you to read from and write to smart contracts without needing to import web3 clients or smart contract ABIs into your source code. This lets you keep your workflows and application logic simple and focused on your product’s unique value proposition.</p>
+<p>The 1Shot API service is designed to handle heavy request traffic. If your product has many users generating onchain actions all at once, 1Shot API ensures all of your transactions will make it to the chain quickly and gas efficiently without flooding the mempool. 1Shot API greatly simplifies the technical overhead of adding digital assets or on-chain logic to any application, bot, or agent, regardless of the language your application is written in. Additionally, with its powerful team &amp; role management features, 1Shot API can scale with your product as your team and user base grows from proof-of-concept to enterprise scale.</p>
 <p>Several helpful client sdks for popular languages like <a class="reference external" href="https://pypi.org/project/uxly-1shot-client/">Python</a>, <a class="reference external" href="https://www.npmjs.com/package/&#64;uxly/1shot-client">Typescript</a> are available so you can one shot your next app in no time, leaving the complexities of delegation, transaction batching, submission and monitoring to us.</p>
 </section>
 <section id="onchain-automation">
@@ -477,8 +476,8 @@ a single POST call. 1Shot API can also be used in a completely non-custodial fas
 <p>The <a class="reference external" href="https://x402.org">x402</a> protocol is a payment scheme built around the <a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/402">HTTP 402</a> status code that lets requesters pay for resources served by an API without the need for registration or traditional authentication. 1Shot API enables integration of x402 payments into your n8n, Make, or server application to accept any compatible ERC-20 token on any supported blockchain network.</p>
 <p>1Shot API can act as a facilitator for any EIP-3009 compatible token on any of its supported EVM networks. See the <a class="reference external" href="/x402/index.html">x402 Facilitator</a> docs for how to get started. Also, check out our documentation for monetizing your <a class="reference external" href="/automation/n8n.html#monetize-n8n-workflows-with-x402">n8n</a> &amp; <a class="reference external" href="/automation/integromat.html#monetize-make-scenarios-with-x402">Make</a> workflows with x402 payments for specific instructions for those platforms.</p>
 </section>
-<section id="shot-prompts">
-<h2>1Shot Prompts<a class="headerlink" href="#shot-prompts" title="Link to this heading">#</a></h2>
+<section id="id1">
+<h2>1Shot Prompts<a class="headerlink" href="#id1" title="Link to this heading">#</a></h2>
 <p>The 1Shot API lets AI agent developers consume smart contracts and their functions as fully annotated tools that can be consumed by any agent programming framework. You can
 find and publish smart contract tool prompts to <a class="reference external" href="https://app.1shotapi.com/1shotprompts">1Shot Prompts</a>. This provides detailed prompts for the contract, function,
 input and output parameter level which allow LLMs to better reason about how to plan transaction execution chains and what to expect from the behavior of a transaction
@@ -570,10 +569,10 @@ before planning or execution.</p>
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#architecture">Architecture</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#how-it-works">How It Works</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#onchain-automation">Onchain Automation</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#facilitating-x402-payments">Facilitating x402 Payments</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#shot-prompts">1Shot Prompts</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">1Shot Prompts</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#getting-started">Getting Started</a></li>
 </ul>
   </nav></div>
