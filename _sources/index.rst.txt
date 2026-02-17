@@ -142,6 +142,7 @@ Make a free 1Shot API account at `app.1shotapi.com <https://app.1shotapi.com>`_.
    :maxdepth: 2
 
    basics/index.rst
+   1shotpay/index.rst
    automation/index.rst
    x402/index.rst
    prompts/index.rst
