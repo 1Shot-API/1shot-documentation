@@ -5,8 +5,8 @@
 
    <br />
 
-x402 Facilitator
-=================
+x402
+=====
 
 1Shot API offers special API endpoints for facilitating `x402 <https://x402.org>`_ payments, check out the `OpenAPI specification </api/openapi.html#operations-tag-x402>`_ for the x402 tag. 
 
