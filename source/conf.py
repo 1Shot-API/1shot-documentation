@@ -7,9 +7,9 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = '1Shot API'
-copyright = '2025, UXly Software'
-author = 'UXly Software'
-release = '0.1.0'
+copyright = '2025, 1Shot API, Inc.'
+author = '1Shot API, Inc.'
+release = '1.0.0'
 
 # -- General configuration ---------------------------------------------------
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#general-configuration
