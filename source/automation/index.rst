@@ -1,7 +1,7 @@
-Onchain Automation
-==================
+Automation
+===========
 
-1Shot API is the best way to automate onchain workflows. We have enterprise-grade integrations with the most popular automation platforms.
+1Shot API is the best way to automate onchain workflows with verified integrations in the most popular automation platforms.
 
 .. toctree::
    :maxdepth: 2
