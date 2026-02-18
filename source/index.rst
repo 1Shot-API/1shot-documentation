@@ -27,7 +27,9 @@ Welcome to 1Shot API
 
    <br />
 
-`1Shot API <https://1shotapi.com>`_ is an enterprise-grade account abstraction and transaction management service for the Ethereum mainnet and L2 ecosystem (Binance and Avalanche supported as well). It provides a simple REST API to trigger state-changing smart contract transactions (as well as smart contract reads) on a target blockchain network with a single POST call. 1Shot API can also be used in a completely non-custodial fashion by using its `delegation feature </basics/wallets.html#account-delegation>`_, allowing you to connect your self-custodial wallet to the 1Shot API service while retaining control over your private keys. 1Shot API also provides an MCP interface via its `1Shot Prompts </prompts/index.html>`_ feature for AI-driven development of new onchain workflows and products.
+`1Shot API <https://1shotapi.com>`_ is a full-stack web3 infrastructure platform that lets you bring reliable onchain agents, workflows and products to market fast. Use the `1Shot Prompts </prompts/index.html>`_ MCP server to connect to the most popular agentic coding tools like Cursor or Replit to prompt your way to a production-ready onchain application.
+
+ is an enterprise-grade account abstraction and transaction management service for the Ethereum mainnet and L2 ecosystem (Binance and Avalanche supported as well). It provides a simple REST API to trigger state-changing smart contract transactions (as well as smart contract reads) on a target blockchain network with a single POST call. 1Shot API can also be used in a completely non-custodial fashion by using its `delegation feature </basics/wallets.html#account-delegation>`_, allowing you to connect your self-custodial wallet to the 1Shot API service while retaining control over your private keys. 1Shot API also provides an MCP interface via its `1Shot Prompts </prompts/index.html>`_ feature for AI-driven development of new onchain workflows and products.
 
 How It Works
 ------------
