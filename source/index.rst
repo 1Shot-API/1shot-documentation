@@ -27,19 +27,63 @@ Welcome to 1Shot API
 
    <br />
 
-`1Shot API <https://1shotapi.com>`_ is a full-stack web3 infrastructure platform that lets you bring reliable onchain agents, workflows and products to market fast. Use the `1Shot Prompts </prompts/index.html>`_ MCP server to connect to the most popular agentic coding tools like Cursor or Replit to prompt your way to a production-ready onchain application.
+`1Shot API <https://1shotapi.com>`_ is a full-stack web3 infrastructure platform that lets you bring reliable onchain agents, workflows and products to market fast with account abstraction, server wallets and consumer stablecoin payments. Use the `1Shot Prompts </prompts/index.html>`_ MCP server to connect to the most popular agentic coding tools like Cursor or Replit to prompt your way to a production-ready onchain application or agent.
 
- is an enterprise-grade account abstraction and transaction management service for the Ethereum mainnet and L2 ecosystem (Binance and Avalanche supported as well). It provides a simple REST API to trigger state-changing smart contract transactions (as well as smart contract reads) on a target blockchain network with a single POST call. 1Shot API can also be used in a completely non-custodial fashion by using its `delegation feature </basics/wallets.html#account-delegation>`_, allowing you to connect your self-custodial wallet to the 1Shot API service while retaining control over your private keys. 1Shot API also provides an MCP interface via its `1Shot Prompts </prompts/index.html>`_ feature for AI-driven development of new onchain workflows and products.
+The fastest way to get started is to connect to the `1Shot Prompts </prompts/index.html>`_ MCP server to your favorite agentic development environment like Cursor or Replit. The agentic coding environment will handle setting up server wallets and importing the necessary smart contract methods into your account.
+
+Getting Started
+----------------------------------
+
+Make a free 1Shot API account at `app.1shotapi.com <https://app.1shotapi.com>`_. Here are the core features you will use to get started with the 1Shot API:
+
+.. grid:: 2 2 2 2
+    :gutter: 2
+
+    .. grid-item-card:: 1. Businesses and Teams 🏢
+        :link: /basics/businesses-and-teams.html
+        :link-alt: Businesses and Teams 
+
+        Create a business, add team members, and manage billing.
+
+    .. grid-item-card:: 2. Server Wallets 👛
+        :link: /basics/wallets.html
+        :link-alt: Wallets
+
+        Provision and fund 1Shot API server wallets for relaying transactions.
+
+    .. grid-item-card:: 3. Stablecoin Payments 💰💳
+        :link: /1shotpay/index.html
+        :link-alt: Consumer Payments with 1ShotPay
+
+        Use your API key and secret to trigger transactions from your application.
+
+    .. grid-item-card:: 4. AI-Development Tools 🤖
+        :link: /prompts/index.html
+        :link-alt: 1Shot Prompts MCP Server
+
+        Connect 1Shot API to your favorite agentic development environment to prompt your way to a production-ready onchain application or agent.
+   
+    .. grid-item-card:: 5. Calling Smart Contracts 📝
+        :link: /basics/contract-methods.html
+        :link-alt: Calling Smart Contracts
+
+        Read from and write to smart contracts by importing their methods into your business's API.
+
+    .. grid-item-card:: 6. Calling the 1Shot API 💻🐀
+        :link: api/api.html
+        :link-alt: Calling the 1Shot API
+
+        Use your API key and secret to trigger transactions from your application.
 
 How It Works
 ------------
 
-.. image:: ./_static/how-it-works-light.png
+.. image:: ./_static/1Shot-API-How-It-Works-Light.png
    :alt: 1Shot API
    :align: center
    :class: only-light
 
-.. image:: ./_static/how-it-works-dark.png
+.. image:: ./_static/1Shot-API-How-It-Works-Dark.png
    :alt: 1Shot API
    :align: center
    :class: only-dark
@@ -107,45 +151,13 @@ find and publish smart contract tool prompts to `1Shot Prompts <https://app.1sho
 input and output parameter level which allow LLMs to better reason about how to plan transaction execution chains and what to expect from the behavior of a transaction
 before planning or execution.
 
-Getting Started
-----------------------------------
-
-Make a free 1Shot API account at `app.1shotapi.com <https://app.1shotapi.com>`_. Here are the core features you will use to get started with the 1Shot API:
-
-.. grid:: 2 2 2 2
-    :gutter: 2
-
-    .. grid-item-card:: 1. Businesses and Teams 🏢
-        :link: /basics/businesses-and-teams.html
-        :link-alt: Businesses and Teams 
-
-        Create a business, add team members, and manage billing.
-
-    .. grid-item-card:: 2. Wallets 👛
-        :link: /basics/wallets.html
-        :link-alt: Wallets
-
-        Provision and fund 1Shot API wallets for submitting transactions.
-   
-    .. grid-item-card:: 3. Calling Smart Contracts 📝
-        :link: /basics/contract-methods.html
-        :link-alt: Calling Smart Contracts
-
-        Read from and write to smart contracts by importing their methods into your business's API.
-
-    .. grid-item-card:: 4. Calling the 1Shot API 💻🐀
-        :link: api/api.html
-        :link-alt: Calling the 1Shot API
-
-        Use your API key and secret to trigger transactions from your application.
-
 .. toctree::
    :hidden:
    :maxdepth: 2
 
    basics/index.rst
    1shotpay/index.rst
+   prompts/index.rst
    x402/index.rst
    automation/index.rst
-   prompts/index.rst
    api/index.rst
