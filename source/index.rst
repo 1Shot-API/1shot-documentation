@@ -4,12 +4,12 @@
    contain the root `toctree` directive.
 
 .. image:: ./_static/welcome-banner-light.png
-   :alt: 1Shot API
+   :alt: 1Shot API welcome banner (light theme)
    :align: center
    :class: only-light
 
 .. image:: ./_static/welcome-banner-dark.png
-   :alt: 1Shot API
+   :alt: 1Shot API welcome banner (dark theme)
    :align: center
    :class: only-dark
 
@@ -27,9 +27,9 @@ Welcome to 1Shot API
 
    <br />
 
-`1Shot API <https://1shotapi.com>`_ is a full-stack web3 infrastructure platform that lets you bring reliable onchain agents, workflows and products to market fast with account abstraction, server wallets and consumer stablecoin payments. Use the `1Shot Prompts </prompts/index.html>`_ MCP server to connect to the most popular agentic coding tools like Cursor or Replit to prompt your way to a production-ready onchain application or agent.
+`1Shot API <https://1shotapi.com>`_ is a full-stack web3 infrastructure platform that lets you bring reliable onchain agents, workflows and products to market fast with account abstraction, server wallets and consumer stablecoin payments. 1Shot API offers MCP capabilities to connect to the most popular agentic coding tools like Cursor or Replit to prompt your way to a production-ready onchain application or agent.
 
-The fastest way to get started is to connect to the `1Shot Prompts </prompts/index.html>`_ MCP server to your favorite agentic development environment like Cursor or Replit. The agentic coding environment will handle setting up server wallets and importing the necessary smart contract methods into your account.
+The fastest way to get started is to connect the `1Shot Prompts </prompts/index.html>`_ MCP server to your favorite agentic development environment like Cursor or Replit. The agentic coding environment will handle setting up server wallets and importing the necessary smart contract methods into your account.
 
 Getting Started
 ----------------------------------
@@ -55,7 +55,7 @@ Make a free 1Shot API account at `app.1shotapi.com <https://app.1shotapi.com>`_.
         :link: /1shotpay/index.html
         :link-alt: Consumer Payments with 1ShotPay
 
-        Use your API key and secret to trigger transactions from your application.
+        Integrate 1ShotPay into your application to accept consumer zero-fee stablecoin payments for carts and agentic payments.
 
     .. grid-item-card:: 4. AI-Development Tools 🤖
         :link: /prompts/index.html
@@ -79,12 +79,12 @@ How It Works
 ------------
 
 .. image:: ./_static/1Shot-API-How-It-Works-Light.png
-   :alt: 1Shot API
+   :alt: 1Shot API how it works (light theme)
    :align: center
    :class: only-light
 
 .. image:: ./_static/1Shot-API-How-It-Works-Dark.png
-   :alt: 1Shot API
+   :alt: 1Shot API how it works (dark theme)
    :align: center
    :class: only-dark
 
@@ -96,60 +96,7 @@ How It Works
 
 The 1Shot API service is designed to handle heavy request traffic. If your product has many users generating onchain actions all at once, 1Shot API ensures all of your transactions will make it to the chain quickly and gas efficiently without flooding the mempool. 1Shot API greatly simplifies the technical overhead of adding digital assets or on-chain logic to any application, bot, or agent, regardless of the language your application is written in. Additionally, with its powerful team & role management features, 1Shot API can scale with your product as your team and user base grows from proof-of-concept to enterprise scale.
 
-Several helpful client sdks for popular languages like `Python <https://pypi.org/project/uxly-1shot-client/>`_, `Typescript <https://www.npmjs.com/package/@uxly/1shot-client>`_ are available so you can one shot your next app in no time, leaving the complexities of delegation, transaction batching, submission and monitoring to us.
-
-Onchain Automation
-------------------
-
-1Shot API is the best place to start for automating onchain workflows. We have integrations with the most popular automation platforms including:
-
-.. grid:: 2
-    :gutter: 2
-
-    .. grid-item-card:: 1. n8n
-        :link: /automation/n8n.html
-        :link-alt: n8n
-        :columns: 12
-
-        .. image:: ./_static/automation/n8n.png
-           :alt: n8n Logo
-           :align: center
-           :width: 400px
-
-    .. grid-item-card:: 2. IFTTT 
-        :link: /automation/ifttt.html
-        :link-alt: If This Then That
-        :columns: 6
-
-        .. image:: ./_static/automation/ifttt.png
-           :alt: IFTTT Logo
-           :align: center
-           :width: 300px
-
-    .. grid-item-card:: 4. Make (formerly Integromat)
-        :link: /automation/integromat.html
-        :link-alt: Make (formerly Integromat)
-        :columns: 6
-
-        .. image:: ./_static/automation/integromat.png
-           :alt: Make Logo
-           :align: center
-           :width: 300px
-
-Facilitating x402 Payments
----------------------------
-
-The `x402 <https://x402.org>`_ protocol is a payment scheme built around the `HTTP 402 <https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Status/402>`_ status code that lets requesters pay for resources served by an API without the need for registration or traditional authentication. 1Shot API enables integration of x402 payments into your n8n, Make, or server application to accept any compatible ERC-20 token on any supported blockchain network. 
-
-1Shot API can act as a facilitator for any EIP-3009 compatible token on any of its supported EVM networks. See the `x402 Facilitator </x402/index.html>`_ docs for how to get started. Also, check out our documentation for monetizing your `n8n </automation/n8n.html#monetize-n8n-workflows-with-x402>`_ & `Make </automation/integromat.html#monetize-make-scenarios-with-x402>`_ workflows with x402 payments for specific instructions for those platforms.  
-
-1Shot Prompts
--------------
-
-The 1Shot API lets AI agent developers consume smart contracts and their functions as fully annotated tools that can be consumed by any agent programming framework. You can 
-find and publish smart contract tool prompts to `1Shot Prompts <https://app.1shotapi.com/1shotprompts>`_. This provides detailed prompts for the contract, function,
-input and output parameter level which allow LLMs to better reason about how to plan transaction execution chains and what to expect from the behavior of a transaction
-before planning or execution.
+Several helpful client SDKs for popular languages like `Python <https://pypi.org/project/uxly-1shot-client/>`_, `Typescript <https://www.npmjs.com/package/@uxly/1shot-client>`_ are available so you can one shot your next app in no time, leaving the complexities of delegation, transaction batching, submission and monitoring to us.
 
 .. toctree::
    :hidden:
