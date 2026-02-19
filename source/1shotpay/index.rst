@@ -24,4 +24,8 @@ Compatibility
    :alt: 1ShotPay login
    :align: center
 
+.. raw:: html
+
+   <br />
+
 1ShotPay uses browser-based passkeys to secure user accounts. This means that it must be accessed in a passkey-enabled browser like Chrome, Firefox, Safari, etc. Additionally, the webauthn `prf-extension <https://developer.mozilla.org/en-US/docs/Web/API/Web_Authentication_API/WebAuthn_extensions#prf>`_ must be available. 
