@@ -29,3 +29,30 @@ Compatibility
    <br />
 
 1ShotPay uses browser-based passkeys to secure user accounts. This means that it must be accessed in a passkey-enabled browser like Chrome, Firefox, Safari, etc. Additionally, the webauthn `prf-extension <https://developer.mozilla.org/en-US/docs/Web/API/Web_Authentication_API/WebAuthn_extensions#prf>`_ must be available. 
+
+Testing and Integration
+------------------------
+
+You can test the embedded functionality of 1ShotPay on the `testbed page <https://client-sdk-testbed.1shotpay.com/>`_. Additionally, you can see an example integration of client-side checkout with 1ShotPay in the `402xPress <https://402xpress.com>`_ demo app. 
+
+See the details for client-side, iframe-based integration or server-side, pay link-based integration:
+
+.. grid:: 2
+    :gutter: 2
+
+    .. grid-item-card:: 1. Client-Side/iFrame Integration
+        :link: /1shotpay/client.html
+        :link-alt: Client-side integration with 1ShotPay
+        :columns: 6
+
+    .. grid-item-card:: 2. Server-Side Pay Link Checkout
+        :link: /1shotpay/server.html
+        :link-alt: Server-side integration with 1ShotPay
+        :columns: 6
+
+
+.. toctree::
+   :maxdepth: 2
+
+   client
+   server
