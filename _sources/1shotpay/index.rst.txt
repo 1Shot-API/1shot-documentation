@@ -45,10 +45,14 @@ See the details for client-side, iframe-based integration or server-side, pay li
         :link-alt: Client-side integration with 1ShotPay
         :columns: 6
 
+        Request payments from users directly in your application.
+
     .. grid-item-card:: 2. Server-Side Pay Link Checkout
         :link: /1shotpay/server.html
         :link-alt: Server-side integration with 1ShotPay
         :columns: 6
+
+        Redirect users to a pay link checkout page to complete the payment.
 
 
 .. toctree::

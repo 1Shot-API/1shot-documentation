@@ -44,15 +44,21 @@ Start by creating a free `1Shot API account <https://app.1shotapi.com>`_. Next, 
         :link-alt: How to manually set up your 1Shot API account.
         :columns: 4
 
+        Set up businesses, wallets, and import smart contract methods step by step.
+
     .. grid-item-card:: 2. AI-Driven Setup 🤖
         :link: /prompts/index.html
         :link-alt: Using the 1Shot Prompts MCP server to set up your 1Shot API account.
         :columns: 4
 
+        Connect 1Shot API to your favorite AI coding environment.
+
     .. grid-item-card:: 3. Stablecoin Payments 💰💳
         :link: /1shotpay/index.html
         :link-alt: Integrating 1ShotPay
         :columns: 4
+
+        Accept zero-fee consumer payments in your app or agent. 
 
 How It Works
 ------------
@@ -71,11 +77,11 @@ How It Works
 
    <br />
 
-1Shot API is not an RPC provider, it is a customizable transaction relayer service which handles the full transaction lifecycle with real-time webhook callbacks on the final state of your application's transactions. 1Shot API allows you to read from and write to smart contracts without needing to import web3 clients or smart contract ABIs into your source code. This lets you keep your workflows and application logic simple and focused on your product's unique value proposition.
+1Shot API is not an RPC provider, it is a programmable transaction relayer service which handles the full transaction lifecycle with real-time webhook callbacks on the final state of your application's transactions. 1Shot API allows you to read from and write to smart contracts without needing to import web3 clients or smart contract ABIs into your source code. This lets you keep your workflows and application logic simple and focused on your product's unique value proposition.
 
 The 1Shot API service is designed to handle heavy request traffic. If your product has many users generating onchain actions all at once, 1Shot API ensures all of your transactions will make it to the chain quickly and gas efficiently without flooding the mempool. 1Shot API greatly simplifies the technical overhead of adding digital assets or on-chain logic to any application, bot, or agent, regardless of the language your application is written in. Additionally, with its powerful team & role management features, 1Shot API can scale with your product as your team and user base grows from proof-of-concept to enterprise scale.
 
-Several helpful client SDKs for popular languages like `Python <https://pypi.org/project/uxly-1shot-client/>`_, `Typescript <https://www.npmjs.com/package/@uxly/1shot-client>`_ are available so you can one shot your next app in no time, leaving the complexities of delegation, transaction batching, submission and monitoring to us.
+Several helpful client SDKs for popular languages like `Python <https://pypi.org/project/uxly-1shot-client/>`_, `TypeScript <https://www.npmjs.com/package/@uxly/1shot-client>`_ are available so you can one shot your next app in no time, leaving the complexities of delegation, transaction batching, submission and monitoring to us.
 
 .. toctree::
    :hidden:
