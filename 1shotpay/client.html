@@ -17,7 +17,7 @@
         gtag('config', 'G-WNFJCLZDV3');
     </script>
     
-    <title>1Shot Prompts &#8212; 1Shot Docs</title>
+    <title>Client-Side / iFrame Integration &#8212; 1Shot Docs</title>
   
   
   
@@ -55,13 +55,13 @@
     <script src="../_static/clipboard.min.js?v=a7894cd8"></script>
     <script src="../_static/copybutton.js?v=18a8d5f5"></script>
     <script src="../_static/design-tabs.js?v=f930bc37"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'prompts/index';</script>
-    <link rel="canonical" href="https://docs.1shotapi.com/prompts/index.html" />
+    <script>DOCUMENTATION_OPTIONS.pagename = '1shotpay/client';</script>
+    <link rel="canonical" href="https://docs.1shotapi.com/1shotpay/client.html" />
     <link rel="icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="x402" href="../x402/index.html" />
-    <link rel="prev" title="Server-Side Pay Link Checkout" href="../1shotpay/server.html" />
+    <link rel="next" title="Server-Side Pay Link Checkout" href="server.html" />
+    <link rel="prev" title="1ShotPay" href="index.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   <meta name="docsearch:version" content="" />
@@ -153,15 +153,15 @@
 </li>
 
 
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../1shotpay/index.html">
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
     1ShotPay
   </a>
 </li>
 
 
-<li class="nav-item current active">
-  <a class="nav-link nav-internal" href="#">
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../prompts/index.html">
     1Shot Prompts
   </a>
 </li>
@@ -317,15 +317,15 @@
 </li>
 
 
-<li class="nav-item ">
-  <a class="nav-link nav-internal" href="../1shotpay/index.html">
+<li class="nav-item current active">
+  <a class="nav-link nav-internal" href="index.html">
     1ShotPay
   </a>
 </li>
 
 
-<li class="nav-item current active">
-  <a class="nav-link nav-internal" href="#">
+<li class="nav-item ">
+  <a class="nav-link nav-internal" href="../prompts/index.html">
     1Shot Prompts
   </a>
 </li>
@@ -418,7 +418,11 @@
 <nav class="bd-docs-nav bd-links"
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
-  <div class="bd-toc-item navbar-nav"></div>
+  <div class="bd-toc-item navbar-nav"><ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Client-Side / iFrame Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="server.html">Server-Side Pay Link Checkout</a></li>
+</ul>
+</div>
 </nav></div>
     </div>
   
@@ -457,7 +461,10 @@
         <i class="fa-solid fa-home"></i>
       </a>
     </li>
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">1Shot Prompts</span></li>
+    
+    <li class="breadcrumb-item"><a href="index.html" class="nav-link">1ShotPay</a></li>
+    
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">Client-Side / iFrame Integration</span></li>
   </ul>
 </nav>
 </div>
@@ -474,15 +481,89 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="shot-prompts">
-<h1>1Shot Prompts<a class="headerlink" href="#shot-prompts" title="Link to this heading">#</a></h1>
-<div class="video_wrapper align-center" style="text-align: center">
-<iframe allowfullscreen="true" src="https://www.youtube.com/embed/ViNfYVmGM8w" style="border: 0; height: 345px; width: 560px">
-</iframe></div><br /><p>There are millions of smart contracts across various EVM networks, some of them are better documented than others. 1Shot Prompts is a community driven effort to document smart contracts, their functions, and the function inputs and outputs in a way that makes them consumable by AI agents.</p>
-<p>Smart contracts must have verified ABI and source code available on Etherscan in order to be published as a prompt. A prompt is a collection of human readable text that describes how the smart contract is to be used in a specific context plus descriptions of the contract functions that would be used in that context along with descriptions of the function inputs and outputs. A single smart contract can have multiple prompts, each describing a different use case or context for the contract.</p>
-<section id="smart-contracts-as-tools">
-<h2>Smart Contracts as Tools<a class="headerlink" href="#smart-contracts-as-tools" title="Link to this heading">#</a></h2>
-<p>Smart contract prompts can be turned into tools by importing them into your <a class="reference external" href="/basics/businesses-and-teams.thml">business</a>. You can then list all the tools available in your business by <a class="reference external" href="/api/api.html#list-available-contract-methods">listing the contract methods</a> in your business. The description fields of the contract methods and their inputs and outputs can be passed to an LLM to help it reason about how to use the contract method and what to expect from the transaction execution.</p>
+  <section id="client-side-iframe-integration">
+<h1>Client-Side / iFrame Integration<a class="headerlink" href="#client-side-iframe-integration" title="Link to this heading">#</a></h1>
+<p>The client SDK lets you embed the <strong>1ShotPay passkey wallet</strong> in your site via an iframe. When a user clicks a button (for example, “Pay with 1ShotPay”), a card opens and gives them the choice to approve or reject the payment—all without leaving your page.</p>
+<section id="install">
+<h2>Install<a class="headerlink" href="#install" title="Link to this heading">#</a></h2>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>yarn<span class="w"> </span>add<span class="w"> </span>@1shotapi/1shotpay-client-sdk<span class="w"> </span>@1shotapi/1shotpay-common
+</pre></div>
+</div>
+<p>Import shared types (e.g. <code class="docutils literal notranslate"><span class="pre">BigNumberString</span></code>, <code class="docutils literal notranslate"><span class="pre">ELocale</span></code>, <code class="docutils literal notranslate"><span class="pre">EVMAccountAddress</span></code>, <code class="docutils literal notranslate"><span class="pre">UnixTimestamp</span></code>) from <code class="docutils literal notranslate"><span class="pre">&#64;1shotapi/1shotpay-common</span></code> when you need them.</p>
+</section>
+<section id="quick-start">
+<h2>Quick start<a class="headerlink" href="#quick-start" title="Link to this heading">#</a></h2>
+<div class="highlight-typescript notranslate"><div class="highlight"><pre><span></span><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">OneShotPayClient</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@1shotapi/1shotpay-client-sdk&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">BigNumberString</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">ELocale</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">EVMAccountAddress</span><span class="p">,</span>
+<span class="w">  </span><span class="nx">UnixTimestamp</span><span class="p">,</span>
+<span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@1shotapi/1shotpay-common&quot;</span><span class="p">;</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">wallet</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">OneShotPayClient</span><span class="p">();</span>
+
+<span class="k">await</span><span class="w"> </span><span class="nx">wallet</span><span class="p">.</span><span class="nx">initialize</span><span class="p">(</span><span class="s2">&quot;Wallet&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">[],</span><span class="w"> </span><span class="nx">ELocale</span><span class="p">.</span><span class="nx">English</span><span class="p">).</span><span class="nx">match</span><span class="p">(</span>
+<span class="w">  </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="kc">undefined</span><span class="p">,</span>
+<span class="w">  </span><span class="p">(</span><span class="nx">err</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="k">throw</span><span class="w"> </span><span class="nx">err</span><span class="p">;</span>
+<span class="w">  </span><span class="p">},</span>
+<span class="p">);</span>
+
+<span class="nx">wallet</span><span class="p">.</span><span class="nx">show</span><span class="p">();</span>
+<span class="nx">wallet</span><span class="p">.</span><span class="nx">hide</span><span class="p">();</span>
+
+<span class="kd">const</span><span class="w"> </span><span class="nx">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="nx">wallet</span>
+<span class="w">  </span><span class="p">.</span><span class="nx">getERC3009Signature</span><span class="p">(</span>
+<span class="w">    </span><span class="s2">&quot;Some recipient&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nx">EVMAccountAddress</span><span class="p">(</span><span class="s2">&quot;0x...&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="nx">BigNumberString</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">),</span>
+<span class="w">    </span><span class="nx">UnixTimestamp</span><span class="p">(</span><span class="mf">1715222400</span><span class="p">),</span>
+<span class="w">    </span><span class="nx">UnixTimestamp</span><span class="p">(</span><span class="mf">1715222400</span><span class="p">),</span>
+<span class="w">  </span><span class="p">)</span>
+<span class="w">  </span><span class="p">.</span><span class="nx">match</span><span class="p">(</span>
+<span class="w">    </span><span class="p">(</span><span class="nx">ok</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="nx">ok</span><span class="p">,</span>
+<span class="w">    </span><span class="p">(</span><span class="nx">err</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="k">throw</span><span class="w"> </span><span class="nx">err</span><span class="p">;</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">  </span><span class="p">);</span>
+</pre></div>
+</div>
+</section>
+<section id="api-overview">
+<h2>API overview<a class="headerlink" href="#api-overview" title="Link to this heading">#</a></h2>
+<p><strong>OneShotPayClient</strong> is the main class. Key methods:</p>
+<ul class="simple">
+<li><p><strong>Lifecycle:</strong> <code class="docutils literal notranslate"><span class="pre">initialize()</span></code>, <code class="docutils literal notranslate"><span class="pre">getStatus()</span></code></p></li>
+<li><p><strong>Auth:</strong> <code class="docutils literal notranslate"><span class="pre">signIn()</span></code>, <code class="docutils literal notranslate"><span class="pre">signOut()</span></code></p></li>
+<li><p><strong>Account:</strong> <code class="docutils literal notranslate"><span class="pre">getAccountAddress()</span></code></p></li>
+<li><p><strong>Signatures:</strong> <code class="docutils literal notranslate"><span class="pre">getERC3009Signature()</span></code>, <code class="docutils literal notranslate"><span class="pre">getPermitSignature()</span></code></p></li>
+<li><p><strong>HTTP:</strong> <code class="docutils literal notranslate"><span class="pre">x402Fetch()</span></code></p></li>
+<li><p><strong>Visibility:</strong> <code class="docutils literal notranslate"><span class="pre">show()</span></code>, <code class="docutils literal notranslate"><span class="pre">hide()</span></code>, <code class="docutils literal notranslate"><span class="pre">getVisible()</span></code></p></li>
+</ul>
+</section>
+<section id="visibility">
+<h2>Visibility<a class="headerlink" href="#visibility" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">show()</span></code> / <code class="docutils literal notranslate"><span class="pre">hide()</span></code> control the iframe modal (the payment card).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">getVisible()</span></code> returns whether the modal is currently shown.</p></li>
+</ul>
+<p>Use <code class="docutils literal notranslate"><span class="pre">show()</span></code> when the user clicks your “Pay with 1ShotPay” (or similar) button; use <code class="docutils literal notranslate"><span class="pre">hide()</span></code> when closing the UI or after the flow completes.</p>
+</section>
+<section id="iframe-events">
+<h2>Iframe events<a class="headerlink" href="#iframe-events" title="Link to this heading">#</a></h2>
+<p>Listen for these events from the embedded iframe:</p>
+<ul class="simple">
+<li><p><strong>``closeFrame``</strong> — The user closed the UI.</p></li>
+<li><p><strong>``registrationRequired``</strong> — Open the registration URL in a new tab so the user can sign up for 1ShotPay.</p></li>
+</ul>
+</section>
+<section id="see-also">
+<h2>See also<a class="headerlink" href="#see-also" title="Link to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>Testbed:</strong> Try embedded 1ShotPay at the <a class="reference external" href="https://client-sdk-testbed.1shotpay.com/">client SDK testbed</a>.</p></li>
+<li><p><strong>Example app:</strong> See client-side checkout in the <a class="reference external" href="https://402xpress.com">402xPress</a> demo.</p></li>
+</ul>
 </section>
 </section>
 
@@ -497,20 +578,20 @@
                   
 <div class="prev-next-area">
     <a class="left-prev"
-       href="../1shotpay/server.html"
+       href="index.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Server-Side Pay Link Checkout</p>
+        <p class="prev-next-title">1ShotPay</p>
       </div>
     </a>
     <a class="right-next"
-       href="../x402/index.html"
+       href="server.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">x402</p>
+        <p class="prev-next-title">Server-Side Pay Link Checkout</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -533,7 +614,12 @@
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#smart-contracts-as-tools">Smart Contracts as Tools</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#install">Install</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#quick-start">Quick start</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#api-overview">API overview</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#visibility">Visibility</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#iframe-events">Iframe events</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#see-also">See also</a></li>
 </ul>
   </nav></div>
 

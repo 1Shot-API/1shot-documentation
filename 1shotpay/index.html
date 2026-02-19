@@ -60,7 +60,7 @@
     <link rel="icon" href="../_static/favicon.ico"/>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="1Shot Prompts" href="../prompts/index.html" />
+    <link rel="next" title="Client-Side / iFrame Integration" href="client.html" />
     <link rel="prev" title="Supported Blockchain Networks" href="../basics/networks.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
@@ -418,7 +418,11 @@
 <nav class="bd-docs-nav bd-links"
      aria-label="Section Navigation">
   <p class="bd-links__title" role="heading" aria-level="1">Section Navigation</p>
-  <div class="bd-toc-item navbar-nav"></div>
+  <div class="bd-toc-item navbar-nav"><ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="client.html">Client-Side / iFrame Integration</a></li>
+<li class="toctree-l1"><a class="reference internal" href="server.html">Server-Side Pay Link Checkout</a></li>
+</ul>
+</div>
 </nav></div>
     </div>
   
@@ -486,6 +490,52 @@
 <img alt="1ShotPay login" class="align-center" src="../_images/1shotpay-login.gif" />
 <br /><p>1ShotPay uses browser-based passkeys to secure user accounts. This means that it must be accessed in a passkey-enabled browser like Chrome, Firefox, Safari, etc. Additionally, the webauthn <a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Authentication_API/WebAuthn_extensions#prf">prf-extension</a> must be available.</p>
 </section>
+<section id="testing-and-integration">
+<h2>Testing and Integration<a class="headerlink" href="#testing-and-integration" title="Link to this heading">#</a></h2>
+<p>You can test the embedded functionality of 1ShotPay on the <a class="reference external" href="https://client-sdk-testbed.1shotpay.com/">testbed page</a>. Additionally, you can see an example integration of client-side checkout with 1ShotPay in the <a class="reference external" href="https://402xpress.com">402xPress</a> demo app.</p>
+<p>See the details for client-side, iframe-based integration or server-side, pay link-based integration:</p>
+<div class="sd-container-fluid sd-sphinx-override sd-mb-4 docutils">
+<div class="sd-row sd-row-cols-2 sd-row-cols-xs-2 sd-row-cols-sm-2 sd-row-cols-md-2 sd-row-cols-lg-2 sd-g-2 sd-g-xs-2 sd-g-sm-2 sd-g-md-2 sd-g-lg-2 docutils">
+<div class="sd-col sd-d-flex-row sd-col-6 sd-col-xs-6 sd-col-sm-6 sd-col-md-6 sd-col-lg-6 docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm sd-card-hover docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+1. Client-Side/iFrame Integration</div>
+</div>
+<a class="sd-stretched-link sd-hide-link-text reference external" href="/1shotpay/client.html"><span>Client-side integration with 1ShotPay</span></a></div>
+</div>
+<div class="sd-col sd-d-flex-row sd-col-6 sd-col-xs-6 sd-col-sm-6 sd-col-md-6 sd-col-lg-6 docutils">
+<div class="sd-card sd-sphinx-override sd-w-100 sd-shadow-sm sd-card-hover docutils">
+<div class="sd-card-body docutils">
+<div class="sd-card-title sd-font-weight-bold docutils">
+2. Server-Side Pay Link Checkout</div>
+</div>
+<a class="sd-stretched-link sd-hide-link-text reference external" href="/1shotpay/server.html"><span>Server-side integration with 1ShotPay</span></a></div>
+</div>
+</div>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="client.html">Client-Side / iFrame Integration</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="client.html#install">Install</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client.html#quick-start">Quick start</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client.html#api-overview">API overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client.html#visibility">Visibility</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client.html#iframe-events">Iframe events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="client.html#see-also">See also</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="server.html">Server-Side Pay Link Checkout</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="server.html#install">Install</a></li>
+<li class="toctree-l2"><a class="reference internal" href="server.html#quick-start-minimal">Quick start (minimal)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="server.html#integration-flow-high-level">Integration flow (high-level)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="server.html#coding-conventions">Coding conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="server.html#oneshotpayserver-api">OneShotPayServer API</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
 </section>
 
 
@@ -508,11 +558,11 @@
       </div>
     </a>
     <a class="right-next"
-       href="../prompts/index.html"
+       href="client.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">1Shot Prompts</p>
+        <p class="prev-next-title">Client-Side / iFrame Integration</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -536,6 +586,7 @@
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#compatibility">Compatibility</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-and-integration">Testing and Integration</a></li>
 </ul>
   </nav></div>
 

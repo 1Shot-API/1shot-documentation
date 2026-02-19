@@ -25,7 +25,7 @@ Automation
            :align: center
            :width: 300px
 
-    .. grid-item-card:: 4. Make (formerly Integromat)
+    .. grid-item-card:: 3. Make (formerly Integromat)
         :link: /automation/integromat.html
         :link-alt: Make (formerly Integromat)
         :columns: 6
