@@ -34,46 +34,25 @@ The fastest way to get started is to connect the `1Shot Prompts </prompts/index.
 Getting Started
 ----------------------------------
 
-Make a free 1Shot API account at `app.1shotapi.com <https://app.1shotapi.com>`_. Here are the core features you will use to get started with the 1Shot API:
+Start by creating a free `1Shot API account <https://app.1shotapi.com>`_. Next, explore the paths to get you up and running with the 1Shot API:
 
-.. grid:: 2 2 2 2
+.. grid:: 2
     :gutter: 2
 
-    .. grid-item-card:: 1. Businesses and Teams 🏢
-        :link: /basics/businesses-and-teams.html
-        :link-alt: Businesses and Teams 
+    .. grid-item-card:: 1. Manual Setup 💻
+        :link: /basics/index.html
+        :link-alt: How to manually set up your 1Shot API account.
+        :columns: 4
 
-        Create a business, add team members, and manage billing.
-
-    .. grid-item-card:: 2. Server Wallets 👛
-        :link: /basics/wallets.html
-        :link-alt: Wallets
-
-        Provision and fund 1Shot API server wallets for relaying transactions.
+    .. grid-item-card:: 2. AI-Driven Setup 🤖
+        :link: /prompts/index.html
+        :link-alt: Using the 1Shot Prompts MCP server to set up your 1Shot API account.
+        :columns: 4
 
     .. grid-item-card:: 3. Stablecoin Payments 💰💳
         :link: /1shotpay/index.html
-        :link-alt: Consumer Payments with 1ShotPay
-
-        Integrate 1ShotPay into your application to accept consumer zero-fee stablecoin payments for carts and agentic payments.
-
-    .. grid-item-card:: 4. AI-Development Tools 🤖
-        :link: /prompts/index.html
-        :link-alt: 1Shot Prompts MCP Server
-
-        Connect 1Shot API to your favorite agentic development environment to prompt your way to a production-ready onchain application or agent.
-   
-    .. grid-item-card:: 5. Calling Smart Contracts 📝
-        :link: /basics/contract-methods.html
-        :link-alt: Calling Smart Contracts
-
-        Read from and write to smart contracts by importing their methods into your business's API.
-
-    .. grid-item-card:: 6. Calling the 1Shot API 💻🐀
-        :link: api/api.html
-        :link-alt: Calling the 1Shot API
-
-        Use your API key and secret to trigger transactions from your application.
+        :link-alt: Integrating 1ShotPay
+        :columns: 4
 
 How It Works
 ------------
