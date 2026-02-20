@@ -483,12 +483,22 @@
 <section id="shotpay">
 <h1>1ShotPay<a class="headerlink" href="#shotpay" title="Link to this heading">#</a></h1>
 <p>1ShotPay is a fully non-custodial consumer stablecoin wallet. It is fully web-based and does not require downloading an app or installing any software. You can create a free account at <a class="reference external" href="https://1shotpay.com">1shotpay.com</a>.</p>
-<p>There is no KYC or AML required to use 1ShotPay. Sign up on mobile or desktop in a few seconds by claiming a unique username and optionally backing up your account. You can fund you account from your USDC balance on Base network using any external Ethereum-compatible wallet or onramp with Coinbase Onramp with 0 fees with your Coinbase account by clicking the “Deposit” button on the home screen.</p>
-<p>Any web application (including onchain apps built on 1Shot API) can leverage 1ShotPay as an meta-onboarding provider to enable users to sign up, fund accounts, checkout or pay for services without the need for expensive payment processors or waiting to get approved by onromp providers.</p>
-<section id="compatibility">
-<h2>Compatibility<a class="headerlink" href="#compatibility" title="Link to this heading">#</a></h2>
+<p>There is no KYC or AML required to use 1ShotPay. Sign up on mobile or desktop in a few seconds by claiming a unique username and optionally backing up your account. You can fund your account from your USDC balance on Base network using any external Ethereum-compatible wallet. Alternatively, you can onramp from a debit card, Apple Pay or bank transfer with Coinbase Onramp by clicking the “Deposit” button on the home screen.</p>
+<section id="use-cases">
+<h2>Use Cases<a class="headerlink" href="#use-cases" title="Link to this heading">#</a></h2>
+<p>Any web application (including onchain apps built on 1Shot API) can leverage 1ShotPay as a meta-onboarding provider to enable users to sign up, fund accounts, checkout or pay for services without the need for expensive payment processors or waiting to get approved by onramp providers. Some key use cases include:</p>
+<ul class="simple">
+<li><p>Cart checkout</p></li>
+<li><p>QR code payments</p></li>
+<li><p>Subscription payments</p></li>
+<li><p>In-app micro-transactions</p></li>
+<li><p>Agent Allowances for <a class="reference external" href="/x402/index.html">x402</a> tool calls</p></li>
+</ul>
+</section>
+<section id="device-requirements">
+<h2>Device Requirements<a class="headerlink" href="#device-requirements" title="Link to this heading">#</a></h2>
 <img alt="1ShotPay login" class="align-center" src="../_images/1shotpay-login.gif" />
-<br /><p>1ShotPay uses browser-based passkeys to secure user accounts. This means that it must be accessed in a passkey-enabled browser like Chrome, Firefox, Safari, etc. Additionally, the webauthn <a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Authentication_API/WebAuthn_extensions#prf">prf-extension</a> must be available.</p>
+<br /><p>1ShotPay uses browser-based passkeys to secure user accounts. This means that it must be accessed in a passkey-enabled browser like Chrome, Firefox, Safari, etc. Webviews typically do not support passkey functionality. Additionally, the WebAuthn <a class="reference external" href="https://developer.mozilla.org/en-US/docs/Web/API/Web_Authentication_API/WebAuthn_extensions#prf">prf-extension</a> must be available as it is required for key derivation.</p>
 </section>
 <section id="testing-and-integration">
 <h2>Testing and Integration<a class="headerlink" href="#testing-and-integration" title="Link to this heading">#</a></h2>
@@ -587,7 +597,8 @@
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#compatibility">Compatibility</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#use-cases">Use Cases</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#device-requirements">Device Requirements</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#testing-and-integration">Testing and Integration</a></li>
 </ul>
   </nav></div>
