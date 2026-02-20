@@ -9,7 +9,12 @@ Client-Side / iFrame Integration
 
    <br />
 
-The client SDK lets you embed the **1ShotPay stablecoin wallet** in your site via an iframe. When a user clicks a button (for example, "Pay with 1ShotPay"), a card opens and gives them the choice to approve or reject the payment—all without leaving your page.
+The client SDK lets you embed the **1ShotPay stablecoin wallet** in your site via an iframe. When a user clicks a button (for example, "Pay with 1ShotPay"), a card opens and gives them the choice to approve or reject the payment—all without leaving your page. 
+
+There are two key payments types:
+
+- **Transfer with Authorization:** The 1ShotPay wallet returns a signed EIP-3009 payload to the caller for relaying to the Base network.
+- **x402 Fetch:** The caller can request a call to an x402-compatible API endpoint in which the 1ShotPay wallet will handle calling the endpoint from the iframe context.
 
 Install
 -------
@@ -85,11 +90,11 @@ Iframe events
 
 Listen for these events from the embedded iframe:
 
-- **``closeFrame``** — The user closed the UI.
-- **``registrationRequired``** — Open the registration URL in a new tab so the user can sign up for 1ShotPay.
+- ``closeFrame`` — The user closed the UI.
+- ``registrationRequired`` — Open the registration URL in a new tab so the user can sign up for 1ShotPay.
 
 See also
 --------
 
-- **Testbed:** Try embedded 1ShotPay at the `client SDK testbed <https://client-sdk-testbed.1shotpay.com/>`_.
+- **Testbed:** Try the embedded 1ShotPay functionality at the `client SDK testbed <https://client-sdk-testbed.1shotpay.com/>`_.
 - **Example app:** See client-side checkout in the `402xPress <https://402xpress.com>`_ demo.
