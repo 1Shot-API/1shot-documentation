@@ -485,6 +485,11 @@
 <h1>Client-Side / iFrame Integration<a class="headerlink" href="#client-side-iframe-integration" title="Link to this heading">#</a></h1>
 <img alt="1ShotPay login" class="align-center" src="../_images/client-integration.gif" />
 <br /><p>The client SDK lets you embed the <strong>1ShotPay stablecoin wallet</strong> in your site via an iframe. When a user clicks a button (for example, “Pay with 1ShotPay”), a card opens and gives them the choice to approve or reject the payment—all without leaving your page.</p>
+<p>There are two key payments types:</p>
+<ul class="simple">
+<li><p><strong>Transfer with Authorization:</strong> The 1ShotPay wallet returns a signed EIP-3009 payload to the caller for relaying to the Base network.</p></li>
+<li><p><strong>x402 Fetch:</strong> The caller can request a call to an x402-compatible API endpoint in which the 1ShotPay wallet will handle calling the endpoint from the iframe context.</p></li>
+</ul>
 <section id="install">
 <h2>Install<a class="headerlink" href="#install" title="Link to this heading">#</a></h2>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>yarn<span class="w"> </span>add<span class="w"> </span>@1shotapi/1shotpay-client-sdk<span class="w"> </span>@1shotapi/1shotpay-common
@@ -555,14 +560,14 @@
 <h2>Iframe events<a class="headerlink" href="#iframe-events" title="Link to this heading">#</a></h2>
 <p>Listen for these events from the embedded iframe:</p>
 <ul class="simple">
-<li><p><strong>``closeFrame``</strong> — The user closed the UI.</p></li>
-<li><p><strong>``registrationRequired``</strong> — Open the registration URL in a new tab so the user can sign up for 1ShotPay.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">closeFrame</span></code> — The user closed the UI.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">registrationRequired</span></code> — Open the registration URL in a new tab so the user can sign up for 1ShotPay.</p></li>
 </ul>
 </section>
 <section id="see-also">
 <h2>See also<a class="headerlink" href="#see-also" title="Link to this heading">#</a></h2>
 <ul class="simple">
-<li><p><strong>Testbed:</strong> Try embedded 1ShotPay at the <a class="reference external" href="https://client-sdk-testbed.1shotpay.com/">client SDK testbed</a>.</p></li>
+<li><p><strong>Testbed:</strong> Try the embedded 1ShotPay functionality at the <a class="reference external" href="https://client-sdk-testbed.1shotpay.com/">client SDK testbed</a>.</p></li>
 <li><p><strong>Example app:</strong> See client-side checkout in the <a class="reference external" href="https://402xpress.com">402xPress</a> demo.</p></li>
 </ul>
 </section>
