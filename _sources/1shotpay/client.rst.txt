@@ -1,7 +1,15 @@
 Client-Side / iFrame Integration
 ================================
 
-The client SDK lets you embed the **1ShotPay passkey wallet** in your site via an iframe. When a user clicks a button (for example, "Pay with 1ShotPay"), a card opens and gives them the choice to approve or reject the payment—all without leaving your page.
+.. image:: ../_static/1shotpay/client-integration.gif
+   :alt: 1ShotPay login
+   :align: center
+
+.. raw:: html
+
+   <br />
+
+The client SDK lets you embed the **1ShotPay stablecoin wallet** in your site via an iframe. When a user clicks a button (for example, "Pay with 1ShotPay"), a card opens and gives them the choice to approve or reject the payment—all without leaving your page.
 
 Install
 -------
