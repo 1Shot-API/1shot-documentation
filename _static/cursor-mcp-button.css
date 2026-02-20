@@ -1,0 +1,22 @@
+/* Cursor MCP install button: light image in light mode, dark image in dark mode */
+.cursor-mcp-install-btn {
+  display: inline-block;
+}
+
+.cursor-mcp-install-btn .cursor-mcp-img-light,
+.cursor-mcp-install-btn .cursor-mcp-img-dark {
+  display: none;
+}
+
+html[data-theme="light"] .cursor-mcp-install-btn .cursor-mcp-img-light {
+  display: inline;
+}
+
+html[data-theme="dark"] .cursor-mcp-install-btn .cursor-mcp-img-dark {
+  display: inline;
+}
+
+/* Default when data-theme not yet set (e.g. before JS loads): show light */
+html:not([data-theme]) .cursor-mcp-install-btn .cursor-mcp-img-light {
+  display: inline;
+}

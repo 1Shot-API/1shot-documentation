@@ -17,7 +17,7 @@
         gtag('config', 'G-WNFJCLZDV3');
     </script>
     
-    <title>1Shot Prompts &#8212; 1Shot Docs</title>
+    <title>MCP &#8212; 1Shot Docs</title>
   
   
   
@@ -42,6 +42,7 @@
     <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=8f2a1f02" />
     <link rel="stylesheet" type="text/css" href="../_static/copybutton.css?v=76b2166b" />
     <link rel="stylesheet" type="text/css" href="../_static/sphinx-design.min.css?v=95c83b7e" />
+    <link rel="stylesheet" type="text/css" href="../_static/cursor-mcp-button.css?v=780e8833" />
   
   <!-- So that users can add custom icons -->
   <script src="../_static/scripts/fontawesome.js?digest=8878045cc6db502f8baf"></script>
@@ -162,7 +163,7 @@
 
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="#">
-    1Shot Prompts
+    MCP
   </a>
 </li>
 
@@ -326,7 +327,7 @@
 
 <li class="nav-item current active">
   <a class="nav-link nav-internal" href="#">
-    1Shot Prompts
+    MCP
   </a>
 </li>
 
@@ -457,7 +458,7 @@
         <i class="fa-solid fa-home"></i>
       </a>
     </li>
-    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">1Shot Prompts</span></li>
+    <li class="breadcrumb-item active" aria-current="page"><span class="ellipsis">MCP</span></li>
   </ul>
 </nav>
 </div>
@@ -474,15 +475,51 @@
 <div id="searchbox"></div>
                 <article class="bd-article">
                   
-  <section id="shot-prompts">
-<h1>1Shot Prompts<a class="headerlink" href="#shot-prompts" title="Link to this heading">#</a></h1>
-<div class="video_wrapper align-center" style="text-align: center">
-<iframe allowfullscreen="true" src="https://www.youtube.com/embed/ViNfYVmGM8w" style="border: 0; height: 345px; width: 560px">
-</iframe></div><br /><p>There are millions of smart contracts across various EVM networks, some of them are better documented than others. 1Shot Prompts is a community driven effort to document smart contracts, their functions, and the function inputs and outputs in a way that makes them consumable by AI agents.</p>
-<p>Smart contracts must have verified ABI and source code available on Etherscan in order to be published as a prompt. A prompt is a collection of human readable text that describes how the smart contract is to be used in a specific context plus descriptions of the contract functions that would be used in that context along with descriptions of the function inputs and outputs. A single smart contract can have multiple prompts, each describing a different use case or context for the contract.</p>
+  <section id="mcp">
+<h1>MCP<a class="headerlink" href="#mcp" title="Link to this heading">#</a></h1>
+<p>1Shot API can be connected to any agentic coding environment that allows MCP server connections with OAuth dynamic client registration. This includes Cursor, Replit, and other popular agentic coding environments.</p>
+<p>The 1Shot API MCP server allows coding agents to configure your imported smart contract methods, server wallets, x402 integrations and stablecoin payments automatically.</p>
+<section id="connecting-to-the-mcp-server">
+<h2>Connecting to the MCP Server<a class="headerlink" href="#connecting-to-the-mcp-server" title="Link to this heading">#</a></h2>
+<p>Add the following to your MCP configuration:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;mcpServers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;1Shot API&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;url&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://mcp.1shotapi.com/mcp&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;transport&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;streamableHttp&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nt">&quot;auth&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;CLIENT_ID&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;P5Jduw80vpVAINgW8lnNwgak9ALgfBIS&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;scopes&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;openid&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;profile&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;email&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;offline_access&quot;</span><span class="p">]</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<section id="install-on-replit">
+<h3>Install on Replit<a class="headerlink" href="#install-on-replit" title="Link to this heading">#</a></h3>
+<p>Click the “Install” button below to add the 1Shot API MCP server to your Replit environment. Using the Replit coding agent, you can build and host web3 applications in one spot, letting 1Shot API handle the server wallet and payment infrastructure.</p>
+<a class="reference external image-reference" href="https://replit.com/integrations?mcp=eyJkaXNwbGF5TmFtZSI6IjFTaG90IEFQSSIsImJhc2VVcmwiOiJodHRwczovL21jcC4xc2hvdGFwaS5jb20vbWNwIn0="><img alt="Install 1Shot API MCP on Replit" src="https://replit.com/badge?caption=Install%201Shot%20API%20MCP" />
+</a>
+</section>
+<section id="install-in-cursor">
+<h3>Install in Cursor<a class="headerlink" href="#install-in-cursor" title="Link to this heading">#</a></h3>
+<p>Add the 1Shot API MCP server to your Cursor environment for creating web3 applications and agents locally:</p>
+<div class="cursor-mcp-install-btn">
+  <a href="https://cursor.com/en-US/install-mcp?name=1Shot%20API&amp;config=eyJ1cmwiOiJodHRwczovL21jcC4xc2hvdGFwaS5jb20vbWNwIiwidHJhbnNwb3J0Ijoic3RyZWFtYWJsZUh0dHAiLCJhdXRoIjp7IkNMSUVOVF9JRCI6IlA1SmR1dzgwdnBWQUlOZ1c4bG5Od2dhazlBTGdmQklTIiwic2NvcGVzIjpbIm9wZW5pZCIsInByb2ZpbGUiLCJlbWFpbCIsIm9mZmxpbmVfYWNjZXNzIl19LCJoZWFkZXJzIjp7fX0%3D">
+    <img src="https://cursor.com/deeplink/mcp-install-dark.svg" class="cursor-mcp-img-light" alt="Install 1Shot API MCP in Cursor">
+    <img src="https://cursor.com/deeplink/mcp-install-light.svg" class="cursor-mcp-img-dark" alt="Install 1Shot API MCP in Cursor">
+  </a>
+</div></section>
+</section>
+<section id="shot-prompts">
+<h2>1Shot Prompts<a class="headerlink" href="#shot-prompts" title="Link to this heading">#</a></h2>
+<p>There are millions of smart contracts across the EVM ecosystem, some of them are better documented than others. <a class="reference external" href="https://app.1shotapi.com/1shot-prompts">1Shot Prompts</a> lets you turn any verified EVM smart contract into an annotated tool that can be accessed via 1Shot API’s MCP server. This improves the reliability and LLM token utilization of coding agents when constructing coding logic around your target smart contracts.</p>
 <section id="smart-contracts-as-tools">
-<h2>Smart Contracts as Tools<a class="headerlink" href="#smart-contracts-as-tools" title="Link to this heading">#</a></h2>
+<h3>Smart Contracts as Tools<a class="headerlink" href="#smart-contracts-as-tools" title="Link to this heading">#</a></h3>
 <p>Smart contract prompts can be turned into tools by importing them into your <a class="reference external" href="/basics/businesses-and-teams.thml">business</a>. You can then list all the tools available in your business by <a class="reference external" href="/api/api.html#list-available-contract-methods">listing the contract methods</a> in your business. The description fields of the contract methods and their inputs and outputs can be passed to an LLM to help it reason about how to use the contract method and what to expect from the transaction execution.</p>
+<p>Smart contracts must have verified ABI and source code available on Etherscan in order to be published as a prompt. A prompt is a collection of human readable text that describes how the smart contract is to be used in a specific context plus descriptions of the contract functions that would be used in that context along with descriptions of the function inputs and outputs. A single smart contract can have multiple prompts, each describing a different use case or context for the contract.</p>
+</section>
 </section>
 </section>
 
@@ -533,7 +570,15 @@
   </div>
   <nav class="bd-toc-nav page-toc" aria-labelledby="pst-page-navigation-heading-2">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#smart-contracts-as-tools">Smart Contracts as Tools</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#connecting-to-the-mcp-server">Connecting to the MCP Server</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#install-on-replit">Install on Replit</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#install-in-cursor">Install in Cursor</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#shot-prompts">1Shot Prompts</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#smart-contracts-as-tools">Smart Contracts as Tools</a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
