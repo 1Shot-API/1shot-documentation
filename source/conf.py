@@ -45,6 +45,7 @@ html_favicon = '_static/favicon.ico' # https://www.sphinx-doc.org/en/master/usag
 html_show_sphinx = False
 html_theme = 'pydata_sphinx_theme'
 html_static_path = ['_static']
+html_css_files = ['cursor-mcp-button.css']
 html_baseurl = 'https://docs.1shotapi.com'
 html_theme_options = {
     "icon_links": [
