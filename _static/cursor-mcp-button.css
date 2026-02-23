@@ -1,3 +1,9 @@
+/* Wrapper for MCP install buttons: centered, vertical spacing below */
+.mcp-install-wrap {
+  text-align: center;
+  margin-bottom: 1.5em;
+}
+
 /* Cursor MCP install button: light image in light mode, dark image in dark mode */
 .cursor-mcp-install-btn {
   display: inline-block;
