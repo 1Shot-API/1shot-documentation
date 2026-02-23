@@ -42,7 +42,7 @@ Add the 1Shot API MCP server to your Cursor environment for creating web3 applic
 .. raw:: html
 
    <div class="cursor-mcp-install-btn">
-     <a href="https://cursor.com/en-US/install-mcp?name=1Shot%20API&amp;config=eyJ1cmwiOiJodHRwczovL21jcC4xc2hvdGFwaS5jb20vbWNwIiwidHJhbnNwb3J0Ijoic3RyZWFtYWJsZUh0dHAiLCJhdXRoIjp7IkNMSUVOVF9JRCI6IlA1SmR1dzgwdnBWQUlOZ1c4bG5Od2dhazlBTGdmQklTIiwic2NvcGVzIjpbIm9wZW5pZCIsInByb2ZpbGUiLCJlbWFpbCIsIm9mZmxpbmVfYWNjZXNzIl19LCJoZWFkZXJzIjp7fX0%3D">
+     <a href="cursor://anysphere.cursor-deeplink/mcp/install?name=1Shot%20API&amp;config=eyJ1cmwiOiJodHRwczovL21jcC4xc2hvdGFwaS5jb20vbWNwIiwidHJhbnNwb3J0Ijoic3RyZWFtYWJsZUh0dHAiLCJhdXRoIjp7IkNMSUVOVF9JRCI6IlA1SmR1dzgwdnBWQUlOZ1c4bG5Od2dhazlBTGdmQklTIiwic2NvcGVzIjpbIm9wZW5pZCIsInByb2ZpbGUiLCJlbWFpbCIsIm9mZmxpbmVfYWNjZXNzIl19LCJoZWFkZXJzIjp7fX0%3D">
        <img src="https://cursor.com/deeplink/mcp-install-dark.svg" class="cursor-mcp-img-light" alt="Install 1Shot API MCP in Cursor">
        <img src="https://cursor.com/deeplink/mcp-install-light.svg" class="cursor-mcp-img-dark" alt="Install 1Shot API MCP in Cursor">
      </a>
