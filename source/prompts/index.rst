@@ -28,25 +28,31 @@ Add the following to your MCP configuration:
 Install on Replit
 ~~~~~~~~~~~~~~~~~~
 
-Click the "Install" button below to add the 1Shot API MCP server to your Replit environment. Using the Replit coding agent, you can build and host web3 applications in one spot, letting 1Shot API handle the server wallet and payment infrastructure.
+.. raw:: html
 
-.. image:: https://replit.com/badge?caption=Install%201Shot%20API%20MCP
-   :target: https://replit.com/integrations?mcp=eyJkaXNwbGF5TmFtZSI6IjFTaG90IEFQSSIsImJhc2VVcmwiOiJodHRwczovL21jcC4xc2hvdGFwaS5jb20vbWNwIn0=
-   :alt: Install 1Shot API MCP on Replit
+   <div class="mcp-install-wrap">
+     <a href="https://replit.com/integrations?mcp=eyJkaXNwbGF5TmFtZSI6IjFTaG90IEFQSSIsImJhc2VVcmwiOiJodHRwczovL21jcC4xc2hvdGFwaS5jb20vbWNwIn0=">
+       <img src="https://replit.com/badge?caption=Install%201Shot%20API%20MCP" alt="Install 1Shot API MCP on Replit">
+     </a>
+   </div>
+
+Click the "Install" button below to add the 1Shot API MCP server to your Replit environment. Using the Replit coding agent, you can build and host web3 applications in one spot, letting 1Shot API handle the server wallet and payment infrastructure.
 
 Install in Cursor
 ~~~~~~~~~~~~~~~~~
 
-Add the 1Shot API MCP server to your Cursor environment for creating web3 applications and agents locally: 
-
 .. raw:: html
 
-   <div class="cursor-mcp-install-btn">
+   <div class="mcp-install-wrap">
+     <div class="cursor-mcp-install-btn">
      <a href="cursor://anysphere.cursor-deeplink/mcp/install?name=1Shot%20API&amp;config=eyJ1cmwiOiJodHRwczovL21jcC4xc2hvdGFwaS5jb20vbWNwIiwidHJhbnNwb3J0Ijoic3RyZWFtYWJsZUh0dHAiLCJhdXRoIjp7IkNMSUVOVF9JRCI6IlA1SmR1dzgwdnBWQUlOZ1c4bG5Od2dhazlBTGdmQklTIiwic2NvcGVzIjpbIm9wZW5pZCIsInByb2ZpbGUiLCJlbWFpbCIsIm9mZmxpbmVfYWNjZXNzIl19LCJoZWFkZXJzIjp7fX0%3D">
        <img src="https://cursor.com/deeplink/mcp-install-dark.svg" class="cursor-mcp-img-light" alt="Install 1Shot API MCP in Cursor">
        <img src="https://cursor.com/deeplink/mcp-install-light.svg" class="cursor-mcp-img-dark" alt="Install 1Shot API MCP in Cursor">
      </a>
+     </div>
    </div>
+
+Add the 1Shot API MCP server to your Cursor environment for creating web3 applications and agents locally: 
 
 1Shot Prompts
 -------------
