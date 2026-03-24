@@ -66,11 +66,15 @@ paths:
                     type: string
                     description: Granted scopes
         400:
-          description: Invalid request (e.g., missing parameters)
+          $ref: "#/components/responses/BadRequestError"
         401:
-          description: Invalid client credentials
+          $ref: "#/components/responses/UnauthenticatedError"
         403:
           $ref: "#/components/responses/PermissionError"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
+        503:
+          $ref: "#/components/responses/DatabaseError"
 
   /chains:
     get:
@@ -107,7 +111,11 @@ paths:
                           $ref: "#/components/schemas/ChainInfo"
                   - $ref: "#/components/schemas/PagedResponse"
 
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
         500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
           $ref: "#/components/responses/DatabaseError"
 
   /chains/{chainId}/fees:
@@ -132,7 +140,46 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/GasFees"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
         500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
+          $ref: "#/components/responses/DatabaseError"
+
+  /chains/{chainId}/contracts/{contractAddress}:
+    get:
+      tags:
+        - Chains
+        - Get
+      description: |
+        Returns whether the address has contract bytecode on the given chain (`eth_getCode`) and, when the bytecode matches the EIP-7702 delegation designator (`0xef0100` + 20-byte implementation), the delegated implementation contract address. Counts against the same monthly read quota as reading a Contract Method.
+      parameters:
+        - name: chainId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/EChain"
+        - name: contractAddress
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/ContractAddress"
+      security:
+        - OAuth2ClientCredentials:
+          - read:api
+      responses:
+        200:
+          description: Bytecode summary at the address.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContractCodeInfo"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
+        500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
           $ref: "#/components/responses/DatabaseError"
   
   /methods/{contractMethodId}/test:  
@@ -186,7 +233,11 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ContractMethodTestResult'
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
         500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
           $ref: "#/components/responses/DatabaseError"
 
   /methods/{contractMethodId}/encode:  
@@ -231,10 +282,14 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ContractMethodEncodeResult'
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
         500:
           $ref: "#/components/responses/DatabaseError"
-
-  /methods/{contractMethodId}/estimate:  
+        503:
+          $ref: "#/components/responses/DatabaseError"
+   
+  /methods/{contractMethodId}/estimate:
     post:
       tags:
         - Contract Methods
@@ -256,6 +311,8 @@ paths:
               properties:
                 params:
                   $ref: '#/components/schemas/JSONValue'
+                contractAddress:
+                  $ref: "#/components/schemas/ContractAddress"
                 authorizationList:
                   type: array
                   items:
@@ -274,10 +331,18 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ContractMethodEstimate"
+        400:
+          $ref: "#/components/responses/BadRequestError"
+        403:
+          $ref: "#/components/responses/PermissionError"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
         500:
           $ref: "#/components/responses/DatabaseError"
-   
-  /methods/{contractMethodId}/execute:  
+        503:
+          $ref: "#/components/responses/DatabaseError"
+
+  /methods/{contractMethodId}/execute:
     post:
       tags:
         - Contract Methods
@@ -334,7 +399,15 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Transaction"
+        400:
+          $ref: "#/components/responses/BadRequestError"
+        403:
+          $ref: "#/components/responses/PermissionError"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
         500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
           $ref: "#/components/responses/DatabaseError"
 
   /methods/{contractMethodId}/executeAsDelegator:  
@@ -368,7 +441,16 @@ paths:
                   description: You may include any text you like when you execute a Contract Method, as a note to yourself about why it was done. This text can be JSON or similar if you want to store formatted data.
                 delegatorAddress:
                   $ref: "#/components/schemas/AccountAddress"
-                  description: The address of the delegator on whose behalf the transaction will be executed.
+                  description: The address of the delegator on whose behalf the transaction will be executed. This delegation must be on file already; 1Shot API will use the first matching delegation for the delegator address but is not guaranteed to use the best or correct one if multiple delegations exist.
+                delegationId:
+                  $ref: "#/components/schemas/DelegationId"
+                  description: The ID of a specific delegation to use for this transaction. This is the best way to ensure that 1Shot API uses the correct delegation for the transaction.
+                delegationData:
+                  type: array
+                  items:
+                    type: string
+                    format: json-string
+                  description: Array of delegation objects to use for the transaction, each serialized as a JSON string. Treated as one-time use and not stored in 1Shot API for reuse. Not usable with delegatorAddress or delegationId.
                 authorizationList:
                   type: array
                   items:
@@ -385,8 +467,6 @@ paths:
                   format: big-number-string
                   description: The gas limit for the transaction. The transaction will revert if it uses more gas than this, and you will spend the gas in the process. Ordinarily, you do not need this, 1Shot will calculate it for you. However, for some very complicated transactions, you may need to set the gas limit manually as the normal estimation process may underestimate the gas amount.
                   example: "123400000000000000000"
-              required:
-                - delegatorAddress
       responses:
         200:
           description: "Success"
@@ -394,7 +474,15 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Transaction"
+        400:
+          $ref: "#/components/responses/BadRequestError"
+        403:
+          $ref: "#/components/responses/PermissionError"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
         500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
           $ref: "#/components/responses/DatabaseError"
 
   /methods/executeBatch:  
@@ -465,7 +553,15 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Transaction"
+        400:
+          $ref: "#/components/responses/BadRequestError"
+        403:
+          $ref: "#/components/responses/PermissionError"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
         500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
           $ref: "#/components/responses/DatabaseError"
 
   /methods/executeAsDelegatorBatch:  
@@ -498,7 +594,16 @@ paths:
                         $ref: '#/components/schemas/JSONValue'
                       delegatorAddress:
                         $ref: "#/components/schemas/AccountAddress"
-                        description: The address of the delegator on whose behalf the transaction will be executed.
+                        description: The address of the delegator on whose behalf the transaction will be executed. This delegation must be on file already; 1Shot API will use the first matching delegation for the delegator address but is not guaranteed to use the best or correct one if multiple delegations exist.
+                      delegationId:
+                        $ref: "#/components/schemas/DelegationId"
+                        description: The ID of a specific delegation to use for this transaction. This is the best way to ensure that 1Shot API uses the correct delegation for the transaction.
+                      delegationData:
+                        type: array
+                        items:
+                          type: string
+                          format: json-string
+                        description: Array of delegation objects to use for this method invocation, each serialized as a JSON string. Treated as one-time use and not stored in 1Shot API for reuse. Not usable with delegatorAddress or delegationId. If you are using redelegations, make sure to properly order them- Child, Parent is correct, Parent, Child will fail.
                       value:
                         type: string
                         format: big-number-string
@@ -540,10 +645,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Transaction"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
         500:
           $ref: "#/components/responses/DatabaseError"
-
-  /methods/{contractMethodId}/read:  
+        503:
+          $ref: "#/components/responses/DatabaseError"
+  
+  /methods/{contractMethodId}/read:
     post:
       tags:
         - Contract Methods
@@ -734,7 +843,15 @@ paths:
                           $ref: "#/components/schemas/ContractMethod"
                   - $ref: "#/components/schemas/PagedResponse"
 
+        400:
+          $ref: "#/components/responses/BadRequestError"
+        403:
+          $ref: "#/components/responses/PermissionError"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
         500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
           $ref: "#/components/responses/DatabaseError"
 
   /business/{businessId}/methods/abi:
@@ -796,7 +913,15 @@ paths:
                 items:
                   $ref: "#/components/schemas/ContractMethod"
 
+        400:
+          $ref: "#/components/responses/BadRequestError"
+        403:
+          $ref: "#/components/responses/PermissionError"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
         500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
           $ref: "#/components/responses/DatabaseError"
 
   /business/{businessId}/methods/prompt:
@@ -873,8 +998,15 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ContractMethod"
-
+        403:
+          $ref: "#/components/responses/PermissionError"
+        404:
+          $ref: "#/components/responses/NotFoundError"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
         500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
           $ref: "#/components/responses/DatabaseError"
 
     put:
@@ -927,8 +1059,15 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ContractMethod"
-
+        400:
+          $ref: "#/components/responses/BadRequestError"
+        403:
+          $ref: "#/components/responses/PermissionError"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
         500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
           $ref: "#/components/responses/DatabaseError"
 
     delete:
@@ -949,7 +1088,336 @@ paths:
         200:
           description: "Success"
 
+        400:
+          $ref: "#/components/responses/BadRequestError"
+        403:
+          $ref: "#/components/responses/PermissionError"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
         500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
+          $ref: "#/components/responses/DatabaseError"
+
+  /business/{businessId}/events:
+    post:
+      tags:
+        - Contract Events
+        - Create
+      description: Creates a new contract event definition for monitoring blockchain events.
+      parameters:
+        - name: businessId
+          required: true
+          in: path
+          schema:
+            $ref: "#/components/schemas/BusinessId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - chainId
+                - contractAddress
+                - name
+                - description
+                - eventName
+              properties:
+                chainId:
+                  $ref: "#/components/schemas/EChain"
+                contractAddress:
+                  $ref: "#/components/schemas/ContractAddress"
+                name:
+                  type: string
+                  description: A human-readable name for this event definition
+                  example: "Transfer Event"
+                description:
+                  type: string
+                  description: A description of what this event represents
+                  example: "Monitors token transfer events"
+                eventName:
+                  type: string
+                  description: The exact name of the event as defined in the contract ABI
+                  example: "Transfer"
+      security:
+        - OAuth2ClientCredentials:
+          - read:api
+      responses:
+        200:
+          description: Returns the created contract event definition.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContractEvent"
+        400:
+          $ref: "#/components/responses/BadRequestError"
+        403:
+          $ref: "#/components/responses/PermissionError"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
+        500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
+          $ref: "#/components/responses/DatabaseError"
+
+    get:
+      tags:
+        - Contract Events
+        - List
+      description: Lists contract event definitions for a business with optional filtering.
+      parameters:
+        - name: businessId
+          required: true
+          in: path
+          schema:
+            $ref: "#/components/schemas/BusinessId"
+        - name: page
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/Page"
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/PageSize"
+        - name: chainId
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/EChain"
+        - name: name
+          in: query
+          required: false
+          schema:
+            type: string
+            description: Filter by event definition name
+        - name: status
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [active, deleted, all]
+            default: active
+            description: Filter by deletion status
+        - name: contractAddress
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/ContractAddress"
+        - name: eventName
+          in: query
+          required: false
+          schema:
+            type: string
+            description: Filter by contract event name
+      security:
+        - OAuth2ClientCredentials:
+          - read:api
+      responses:
+        200:
+          description: Returns a paginated list of contract event definitions.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/PagedResponse"
+                  - type: object
+                    properties:
+                      response:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/ContractEvent"
+        403:
+          $ref: "#/components/responses/PermissionError"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
+        500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
+          $ref: "#/components/responses/DatabaseError"
+
+  /events/{contractEventId}:
+    get:
+      tags:
+        - Contract Events
+        - Get
+      description: Retrieves a specific contract event definition by ID.
+      parameters:
+        - name: contractEventId
+          required: true
+          in: path
+          schema:
+            $ref: "#/components/schemas/ContractEventId"
+      security:
+        - OAuth2ClientCredentials:
+          - read:api
+      responses:
+        200:
+          description: Returns the contract event definition.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContractEvent"
+        403:
+          $ref: "#/components/responses/PermissionError"
+        404:
+          $ref: "#/components/responses/NotFoundError"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
+        500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
+          $ref: "#/components/responses/DatabaseError"
+
+    put:
+      tags:
+        - Contract Events
+        - Update
+      description: Updates an existing contract event definition.
+      parameters:
+        - name: contractEventId
+          required: true
+          in: path
+          schema:
+            $ref: "#/components/schemas/ContractEventId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Updated name for the event definition
+                description:
+                  type: string
+                  description: Updated description for the event definition
+      security:
+        - OAuth2ClientCredentials:
+          - read:api
+      responses:
+        200:
+          description: Returns the updated contract event definition.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ContractEvent"
+        403:
+          $ref: "#/components/responses/PermissionError"
+        404:
+          $ref: "#/components/responses/NotFoundError"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
+        500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
+          $ref: "#/components/responses/DatabaseError"
+
+    delete:
+      tags:
+        - Contract Events
+        - Delete
+      description: Deletes a contract event definition.
+      parameters:
+        - name: contractEventId
+          required: true
+          in: path
+          schema:
+            $ref: "#/components/schemas/ContractEventId"
+      security:
+        - OAuth2ClientCredentials:
+          - read:api
+      responses:
+        200:
+          description: Successfully deleted the contract event definition.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    example: true
+        403:
+          $ref: "#/components/responses/PermissionError"
+        500:
+          $ref: "#/components/responses/DatabaseError"
+
+  /events/{contractEventId}/search:
+    post:
+      tags:
+        - Contract Events
+        - Search
+      description: Reads contract event logs from the blockchain for the specified event definition.
+      parameters:
+        - name: contractEventId
+          required: true
+          in: path
+          schema:
+            $ref: "#/components/schemas/ContractEventId"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                startBlock:
+                  type: integer
+                  description: Starting block number to search from
+                  example: 12345678
+                endBlock:
+                  type: integer
+                  description: Ending block number to search to
+                  example: 12345680
+                topics:
+                  type: object
+                  description: Filter by indexed event parameters
+                  additionalProperties:
+                    type: string
+                    description: Topic value to filter by. Must be an indexed topic.
+                  example:
+                    from: "0x1234567890123456789012345678901234567890"
+                    to: "0x0987654321098765432109876543210987654321"
+      security:
+        - OAuth2ClientCredentials:
+          - read:api
+      responses:
+        200:
+          description: Returns the contract event logs found.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  logs:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ContractEventLog"
+                  error:
+                    type: string
+                    description: The error message from the API
+                  maxResults:
+                    type: integer
+                    description: The maximum number of results returned by the API
+                  startBlock:
+                    type: integer
+                    description: The recommended starting block number in case of excessive results.
+                  endBlock:
+                    type: integer
+                    description: The recommended ending block number in case of excessive results.
+        403:
+          $ref: "#/components/responses/PermissionError"
+        404:
+          $ref: "#/components/responses/NotFoundError"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
+        500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
           $ref: "#/components/responses/DatabaseError"
 
   /business/{businessId}/transactions:
@@ -1055,8 +1523,13 @@ paths:
                         items:
                           $ref: "#/components/schemas/Transaction"
                   - $ref: "#/components/schemas/PagedResponse"
-
+        403:
+          $ref: "#/components/responses/PermissionError"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
         500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
           $ref: "#/components/responses/DatabaseError"
 
   /transactions/{transactionId}:
@@ -1082,7 +1555,15 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Transaction"
+        403:
+          $ref: "#/components/responses/PermissionError"
+        404:
+          $ref: "#/components/responses/NotFoundError"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
         500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
           $ref: "#/components/responses/DatabaseError"
 
   /business/{businessId}/wallets:
@@ -1139,6 +1620,12 @@ paths:
                   - $ref: "#/components/schemas/PagedResponse"
         403:
           $ref: "#/components/responses/PermissionError"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
+        500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
+          $ref: "#/components/responses/DatabaseError"
     post:
       tags:
         - Wallets
@@ -1183,8 +1670,15 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Wallet"
-
+        400:
+          $ref: "#/components/responses/BadRequestError"
+        403:
+          $ref: "#/components/responses/PermissionError"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
         500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
           $ref: "#/components/responses/DatabaseError"
           
   /wallets/{walletId}:
@@ -1218,6 +1712,14 @@ paths:
                 $ref: "#/components/schemas/Wallet"
         403:
           $ref: "#/components/responses/PermissionError"
+        404:
+          $ref: "#/components/responses/NotFoundError"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
+        500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
+          $ref: "#/components/responses/DatabaseError"
     delete:
       tags:
         - Wallets
@@ -1247,6 +1749,14 @@ paths:
                     example: true
         403:
           $ref: "#/components/responses/PermissionError"
+        404:
+          $ref: "#/components/responses/NotFoundError"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
+        500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
+          $ref: "#/components/responses/DatabaseError"
     put:
       tags:
         - Wallets
@@ -1328,8 +1838,17 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Transaction"
-
+        400:
+          $ref: "#/components/responses/BadRequestError"
+        403:
+          $ref: "#/components/responses/PermissionError"
+        404:
+          $ref: "#/components/responses/NotFoundError"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
         500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
           $ref: "#/components/responses/DatabaseError"
 
   /wallets/{walletId}/delegations:
@@ -1373,7 +1892,13 @@ paths:
                         items:
                           $ref: "#/components/schemas/Delegation"
                   - $ref: "#/components/schemas/PagedResponse"
+        403:
+          $ref: "#/components/responses/PermissionError"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
         500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
           $ref: "#/components/responses/DatabaseError"
 
     post:
@@ -1434,7 +1959,436 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/Delegation"
+        400:
+          $ref: "#/components/responses/BadRequestError"
+        403:
+          $ref: "#/components/responses/PermissionError"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
         500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
+          $ref: "#/components/responses/DatabaseError"
+
+  /wallets/{walletId}/delegations/redelegate:
+    post:
+      tags:
+        - Wallets
+        - Delegations
+      description: |
+        Variant of redelegation that signs a passed-in delegation instead of looking one up by ID.
+        Identical to POST /delegation/{delegationId}/redelegate except you supply the parent delegation in the body.
+        The wallet (walletId) must be the delegate of the passed-in delegation; it signs the new delegation to delegateAddress.
+        Very useful for fanning out a single delegation to multiple server wallets.
+      parameters:
+        - name: walletId
+          in: path
+          description: The internal uuid of the escrow wallet that is the delegate of the passed-in delegation and will sign the redelegation
+          required: true
+          schema:
+            $ref: "#/components/schemas/WalletId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - delegationData
+                - delegateAddress
+              properties:
+                delegationData:
+                  $ref: "#/components/schemas/DelegationData"
+                  description: The parent delegation (to this wallet) serialized as a JSON string. BigInts must be encoded as strings.
+                delegateAddress:
+                  $ref: "#/components/schemas/AccountAddress"
+                  description: The address of the new delegate to redelegate to.
+      security:
+        - OAuth2ClientCredentials:
+          - read:api
+      responses:
+        200:
+          description: The parent and redelegation as serialized JSON strings (DelegationData). Pass these in delegationData when executing as delegator.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - parent
+                  - redelegation
+                properties:
+                  parent:
+                    $ref: "#/components/schemas/DelegationData"
+                    description: The parent delegation serialized as JSON. Include this and the redelegation (in order) in delegationData when redeeming.
+                  redelegation:
+                    $ref: "#/components/schemas/DelegationData"
+                    description: The signed redelegation serialized as JSON.
+        400:
+          $ref: "#/components/responses/BadRequestError"
+        403:
+          $ref: "#/components/responses/PermissionError"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
+        500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
+          $ref: "#/components/responses/DatabaseError"
+
+  /wallets/{walletId}/signature/{type}:
+    get:
+      tags:
+        - Wallets
+        - Get
+      description: |
+        Gets a signature from a Wallet (same behavior as **POST** on this path). Supported types:
+        - **erc3009** / **permit2**: Token transfer authorizations. Pass `contractAddress`, `destinationAddress`, and `amount` as query parameters (plus optional `validUntil`, `validAfter`, `fromAddress`), or use **POST** with the same fields in the JSON body.
+        - **erc712**: EIP-712 / `eth_signTypedData_v4`. Pass `domain`, `types`, and `message` (typed-data envelope: `primaryType` + struct `message`) as query JSON strings, or **POST** with objects (recommended for large payloads).
+        - **erc191**: EIP-191 personal message via `signMessage`. Pass **`message`** as the plain UTF-8 string to sign (query or **POST** body). Use **POST** for long messages.
+      parameters:
+        - name: walletId
+          in: path
+          description: The ID of the wallet
+          required: true
+          schema:
+            $ref: "#/components/schemas/WalletId"
+        - name: type
+          in: path
+          description: erc3009 / permit2 (token auth), erc712 (typed data), erc191 (plain message, EIP-191).
+          required: true
+          schema:
+            type: string
+            enum:
+              - erc3009
+              - permit2
+              - erc712
+              - erc191
+        - name: contractAddress
+          in: query
+          description: Required for erc3009 and permit2. Ignored for erc712 and erc191.
+          required: false
+          schema:
+            $ref: "#/components/schemas/ContractAddress"
+        - name: destinationAddress
+          in: query
+          description: Required for erc3009 and permit2. Ignored for erc712 and erc191.
+          required: false
+          schema:
+            $ref: "#/components/schemas/AccountAddress"
+        - name: amount
+          in: query
+          description: Required for erc3009 and permit2. Ignored for erc712 and erc191.
+          required: false
+          schema:
+            type: string
+            format: big-number-string
+            example: "123400"
+        - name: validUntil
+          in: query
+          description: The timestamp until which the signature is valid. This is in seconds since the Unix epoch. For Permit2 signatures, this is the "deadline" value.
+          required: false
+          schema:
+            type: number
+            format: unix-timestamp
+            example: 1659485172
+        - name: validAfter
+          in: query
+          description: The timestamp after which the signature is valid (seconds since Unix epoch). Only for erc3009; must not be set for permit2.
+          required: false
+          schema:
+            type: number
+            format: unix-timestamp
+            example: 1659485172
+        - name: fromAddress
+          in: query
+          description: Optional. When set, the ERC-3009 authorization uses this address as the "from" (token holder). Only for erc3009.
+          required: false
+          schema:
+            $ref: "#/components/schemas/AccountAddress"
+        - name: domain
+          in: query
+          description: |
+            **erc712 only.** URL-encoded JSON string of the EIP-712 domain (e.g. `name`, `version`, `chainId`, `verifyingContract`), same as the first argument to `signTypedData`.
+          required: false
+          schema:
+            type: string
+            example: '{"name":"MyApp","version":"1","chainId":1,"verifyingContract":"0x0000000000000000000000000000000000000000"}'
+        - name: types
+          in: query
+          description: |
+            **erc712 only.** URL-encoded JSON string of the types map (struct definitions), same as the `types` argument to `signTypedData`. Do not include `EIP712Domain` if your library adds it automatically; the API strips it before signing.
+          required: false
+          schema:
+            type: string
+            example: '{"Person":[{"name":"name","type":"string"},{"name":"wallet","type":"address"}]}'
+        - name: message
+          in: query
+          description: |
+            **erc712:** URL-encoded JSON string `{ "primaryType": "...", "message": { ...struct fields } }` (same shape as the typed-data root passed to `signTypedData`).
+            **erc191:** Plain UTF-8 text to sign (EIP-191). For long text prefer **POST**.
+          required: false
+          schema:
+            type: string
+            example: '{"primaryType":"Person","message":{"name":"Alice","wallet":"0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"}}'
+      security:
+        - OAuth2ClientCredentials:
+          - read:api
+      responses:
+        200:
+          description: "The signature and the data that was signed."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  signature:
+                    type: string
+                    format: hex-string
+                    description: The signature of the transfer.
+                    example: "0x1234567890abcdef"
+                  data:
+                    type: string
+                    format: json-string
+                    description: For erc3009/permit2, the signed payload. For erc712, domain/types/primaryType/struct. For erc191, the message that was signed.
+        400:
+          $ref: "#/components/responses/BadRequestError"
+        403:
+          $ref: "#/components/responses/PermissionError"
+        404:
+          $ref: "#/components/responses/NotFoundError"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
+        500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
+          $ref: "#/components/responses/DatabaseError"
+
+    post:
+      tags:
+        - Wallets
+        - Post
+      description: |
+        Same as **GET**, with parameters in the JSON body. Prefer **POST** for large **erc712** payloads or long **erc191** messages.
+
+        - **erc3009** / **permit2**: `contractAddress`, `destinationAddress`, `amount` (required); optional `validUntil`, `validAfter`, `fromAddress`.
+        - **erc712**: `domain`, `types`, `message` (`{ primaryType, message: { ...struct } }`). Objects or JSON strings.
+        - **erc191**: `message` as a plain string (UTF-8).
+      parameters:
+        - name: walletId
+          in: path
+          description: The ID of the wallet
+          required: true
+          schema:
+            $ref: "#/components/schemas/WalletId"
+        - name: type
+          in: path
+          description: Same as GET — erc3009, permit2, erc712, erc191.
+          required: true
+          schema:
+            type: string
+            enum:
+              - erc3009
+              - permit2
+              - erc712
+              - erc191
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              description: |
+                Include the fields for the chosen `type`. Omit unrelated fields (e.g. no `contractAddress` for erc712/erc191).
+              properties:
+                contractAddress:
+                  $ref: "#/components/schemas/ContractAddress"
+                destinationAddress:
+                  $ref: "#/components/schemas/AccountAddress"
+                amount:
+                  oneOf:
+                    - type: string
+                      format: big-number-string
+                    - type: number
+                  description: Required for erc3009 and permit2. Number values are accepted and coerced to string.
+                validUntil:
+                  type: number
+                  format: unix-timestamp
+                validAfter:
+                  type: number
+                  format: unix-timestamp
+                fromAddress:
+                  $ref: "#/components/schemas/AccountAddress"
+                domain:
+                  description: erc712 — EIP-712 domain object (or JSON string).
+                  oneOf:
+                    - type: object
+                      additionalProperties: true
+                    - type: string
+                types:
+                  description: erc712 — types map (or JSON string).
+                  oneOf:
+                    - type: object
+                      additionalProperties: true
+                    - type: string
+                message:
+                  description: |
+                    **erc712:** object `{ primaryType, message }` (struct payload) or JSON string of that object.
+                    **erc191:** plain string to sign (EIP-191).
+                  oneOf:
+                    - type: string
+                    - type: object
+                      required:
+                        - primaryType
+                        - message
+                      properties:
+                        primaryType:
+                          type: string
+                        message:
+                          type: object
+                          additionalProperties: true
+      security:
+        - OAuth2ClientCredentials:
+          - read:api
+      responses:
+        200:
+          description: "The signature and the data that was signed."
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  signature:
+                    type: string
+                    format: hex-string
+                    description: The signature.
+                    example: "0x1234567890abcdef"
+                  data:
+                    type: string
+                    format: json-string
+                    description: Signed payload / metadata (same as GET).
+        400:
+          $ref: "#/components/responses/BadRequestError"
+        403:
+          $ref: "#/components/responses/PermissionError"
+        404:
+          $ref: "#/components/responses/NotFoundError"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
+        500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
+          $ref: "#/components/responses/DatabaseError"
+
+  /wallets/{walletId}/authorizePermit2:
+    put:
+      tags:
+        - Wallets
+        - Update
+      description: Authorizes Permit2 for a wallet. This allows the wallet to use Permit2 transfers without requiring individual signatures for each transaction.
+      parameters:
+        - name: walletId
+          in: path
+          description: The ID of the wallet to authorize Permit2 for
+          required: true
+          schema:
+            $ref: "#/components/schemas/WalletId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                contractAddress:
+                  $ref: "#/components/schemas/ContractAddress"
+                  description: The contract address of the token to authorize Permit2 for
+                  example: "0x1234567890abcdef"
+              required:
+                - contractAddress
+      security:
+        - OAuth2ClientCredentials:
+          - read:api
+      responses:
+        200:
+          description: Successfully authorized Permit2 for the wallet
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                    description: Whether the authorization was successful
+                    example: true
+        400:
+          $ref: "#/components/responses/BadRequestError"
+        403:
+          $ref: "#/components/responses/PermissionError"
+        404:
+          $ref: "#/components/responses/NotFoundError"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
+        500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
+          $ref: "#/components/responses/DatabaseError"
+
+  /delegation/{delegationId}/redelegate:
+    post:
+      tags:
+        - Wallets
+        - Delegations
+        - Update
+      description: Creates a redelegation from an existing delegation to a new delegate address. The escrow wallet that was the delegate of the original delegation signs the new delegation. Returns the parent and redelegation as serialized JSON strings (the form you pass in to execute as delegator).
+      parameters:
+        - name: delegationId
+          in: path
+          description: The internal uuid of the delegation to redelegate from
+          required: true
+          schema:
+            type: string
+            format: uuid
+            example: 8a6e0804-2bd0-4672-b79d-d97027f90720
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - delegateAddress
+              properties:
+                delegateAddress:
+                  $ref: "#/components/schemas/AccountAddress"
+                  description: The new delegate address (recipient of the redelegation)
+      security:
+        - OAuth2ClientCredentials:
+          - read:api
+      responses:
+        200:
+          description: The parent and redelegation as serialized JSON strings (DelegationData). Pass these in delegationData when executing as delegator.
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - parent
+                  - redelegation
+                properties:
+                  parent:
+                    $ref: "#/components/schemas/DelegationData"
+                    description: The parent delegation serialized as JSON. Include this and the redelegation (in order) in delegationData when redeeming.
+                  redelegation:
+                    $ref: "#/components/schemas/DelegationData"
+                    description: The signed redelegation serialized as JSON.
+        403:
+          $ref: "#/components/responses/PermissionError"
+        404:
+          $ref: "#/components/responses/NotFoundError"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
+        500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
           $ref: "#/components/responses/DatabaseError"
 
   /delegation/{delegationId}:
@@ -1470,7 +2424,13 @@ paths:
                     example: true
         403:
           $ref: "#/components/responses/PermissionError"
+        404:
+          $ref: "#/components/responses/NotFoundError"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
         500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
           $ref: "#/components/responses/DatabaseError"
   
   /structs/{structId}:
@@ -1510,7 +2470,13 @@ paths:
                 $ref: "#/components/schemas/SolidityStruct"
         403:
           $ref: "#/components/responses/PermissionError"
+        404:
+          $ref: "#/components/responses/NotFoundError"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
         500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
           $ref: "#/components/responses/DatabaseError"
       
   /structs/{structId}/params:
@@ -1544,9 +2510,17 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SolidityStruct"
+        400:
+          $ref: "#/components/responses/BadRequestError"
         403:
           $ref: "#/components/responses/PermissionError"
+        404:
+          $ref: "#/components/responses/NotFoundError"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
         500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
           $ref: "#/components/responses/DatabaseError"
   
     put:
@@ -1594,9 +2568,17 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/SolidityStruct"
+        400:
+          $ref: "#/components/responses/BadRequestError"
         403:
           $ref: "#/components/responses/PermissionError"
+        404:
+          $ref: "#/components/responses/NotFoundError"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
         500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
           $ref: "#/components/responses/DatabaseError"
 
   /structs/{structId}/params/{structParamId}:
@@ -1634,7 +2616,13 @@ paths:
                 $ref: "#/components/schemas/SolidityStruct"
         403:
           $ref: "#/components/responses/PermissionError"
+        404:
+          $ref: "#/components/responses/NotFoundError"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
         500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
           $ref: "#/components/responses/DatabaseError"
 
   /prompts/search:
@@ -1669,20 +2657,30 @@ paths:
                 type: array
                 items:
                   $ref: "#/components/schemas/FullPrompt"
+        400:
+          $ref: "#/components/responses/BadRequestError"
+        403:
+          $ref: "#/components/responses/PermissionError"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
         500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
           $ref: "#/components/responses/DatabaseError"
 
   /x402/supported:
     get:
       tags:
         - x402
-      description: Returns the supported payment methods
+      description: |
+        Returns supported x402 payment kinds. For each chain/scheme supported by the facilitator, the API returns **two** entries:
+        one with `x402Version: 1` and legacy `network` names, and one with `x402Version: 2` and CAIP-2 `eip155:&lt;chainId&gt;` network ids.
       security:
         - OAuth2ClientCredentials:
           - read:api
       responses:
         200:
-          description: Returns whether or not the payment should succeed
+          description: Supported x402 payment kinds (v1 and v2 rows per chain)
           content:
             application/json:
               schema:
@@ -1693,22 +2691,57 @@ paths:
                     items:
                       type: object
                       properties:
+                        x402Version:
+                          type: integer
+                          enum: [1, 2]
+                          description: Protocol version this row describes (`1` = legacy network name, `2` = CAIP-2 network).
                         scheme:
                           type: string
-                          description: The scheme for the payment
+                          description: The scheme for the payment (e.g. `exact`)
                         network:
-                          $ref: "#/components/schemas/EX402Network"
+                          description: v1 rows use legacy x402 network names; v2 rows use CAIP-2 `eip155:&lt;chainId&gt;`.
+                          oneOf:
+                            - $ref: "#/components/schemas/EX402Network"
+                            - $ref: "#/components/schemas/CAIP2Network"
+                        tokens:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              contractAddress:
+                                type: string
+                                format: evm-address
+                              name:
+                                type: string
+                              symbol:
+                                type: string
+                              decimals:
+                                type: integer
+                              version:
+                                type: string
+                                description: Token metadata version (e.g. USDC `2`)
                       required:
+                        - x402Version
                         - scheme
                         - network
+                        - tokens
+        403:
+          $ref: "#/components/responses/PermissionError"
         500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
           $ref: "#/components/responses/DatabaseError"
 
   /x402/verify:
     post:
       tags:
         - x402
-      description: Verifies an x402 payment header
+      description: |
+        Verifies an x402 payment (facilitator flow). Supports **v1** and **v2**
+        ([x402 v1 spec](https://github.com/coinbase/x402/blob/main/specs/x402-specification-v1.md),
+        [x402 v2 spec](https://github.com/coinbase/x402/blob/main/specs/x402-specification-v2.md)).
+        **v1:** `paymentPayload` is the v1 PaymentPayload; `paymentRequirements` uses `maxAmountRequired` and legacy `network` names.
+        **v2:** `paymentPayload` is the v2 shape (`accepted`, inner `payload`, optional `resource`); `paymentRequirements` uses `amount` and CAIP-2 `network` (e.g. `eip155:84532`). `paymentPayload.accepted` must match `paymentRequirements`.
       requestBody:
         required: true
         content:
@@ -1718,23 +2751,32 @@ paths:
               properties:
                 x402Version:
                   type: integer
-                  description: The x402 protocol version. Right now, it's just 1.
+                  description: Protocol version — use `1` or `2`.
                   example: 1
                 paymentPayload:
-                  type: string
-                  description: A JSON stringified PaymentPayload object
+                  type: object
+                  description: x402 v1 or v2 PaymentPayload (see endpoint description).
                 paymentRequirements:
                   type: object
+                  description: |
+                    v1 facilitator requirements (`maxAmountRequired`, legacy `network`) or
+                    v2 requirements (`amount`, CAIP-2 `network`). Other fields match the spec.
                   properties:
                     scheme:
                       type: string
                       example: exact
                     network:
-                      $ref: "#/components/schemas/EX402Network"
+                      oneOf:
+                        - $ref: "#/components/schemas/EX402Network"
+                        - $ref: "#/components/schemas/CAIP2Network"
                     maxAmountRequired:
                       type: string
                       format: big-number-string
                       example: 5000000
+                    amount:
+                      type: string
+                      format: big-number-string
+                      description: v2 required payment amount (atomic units)
                     resource:
                       type: string
                       example: https://n8n.1shotapi.dev/webhook/gas-station
@@ -1787,14 +2829,32 @@ paths:
                   invalidReason: 
                     type: string
                     description: The reason, if any, that the payment is invalid. Will be empty if isValid is true.
+                  payer:
+                    type: string
+                    format: evm-address
+                    nullable: true
+                    description: Payer address when determinable (v2-style); may be null when validation fails early.
+        400:
+          $ref: "#/components/responses/BadRequestError"
+        403:
+          $ref: "#/components/responses/PermissionError"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
         500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
           $ref: "#/components/responses/DatabaseError"
 
   /x402/settle:
     post:
       tags:
         - x402
-      description: Runs a transaction from an x402 header and returns whether or not the payment was successful. 
+      description: |
+        Settles an x402 payment on-chain. Request body matches `POST /x402/verify` (**v1** vs **v2** `paymentPayload` / `paymentRequirements`).
+
+        **Response shape depends on `x402Version` in the request:**
+        - **`x402Version: 1`** — [x402 v1](https://github.com/coinbase/x402/blob/main/specs/x402-specification-v1.md) settle shape: `error`, `txHash`, `networkId` (legacy network enum).
+        - **`x402Version: 2`** — [x402 v2](https://github.com/coinbase/x402/blob/main/specs/x402-specification-v2.md) settle shape: `errorReason`, `transaction`, `network` (CAIP-2), `payer`.
       requestBody:
         required: true
         content:
@@ -1804,23 +2864,29 @@ paths:
               properties:
                 x402Version:
                   type: integer
-                  description: The x402 protocol version. Right now, it's just 1.
+                  description: Protocol version — use `1` or `2`.
                   example: 1
                 paymentPayload:
-                  type: string
-                  description: A JSON stringified PaymentPayload object
+                  type: object
+                  description: x402 v1 or v2 PaymentPayload (see `POST /x402/verify`).
                 paymentRequirements:
                   type: object
+                  description: v1 or v2 payment requirements (same as `POST /x402/verify`).
                   properties:
                     scheme:
                       type: string
                       example: exact
                     network:
-                      $ref: "#/components/schemas/EX402Network"
+                      oneOf:
+                        - $ref: "#/components/schemas/EX402Network"
+                        - $ref: "#/components/schemas/CAIP2Network"
                     maxAmountRequired:
                       type: string
                       format: big-number-string
                       example: 5000000
+                    amount:
+                      type: string
+                      format: big-number-string
                     resource:
                       type: string
                       example: https://n8n.1shotapi.dev/webhook/gas-station
@@ -1861,7 +2927,235 @@ paths:
           - read:api
       responses:
         200:
-          description: Returns whether or not the payment should succeed
+          description: |
+            Settlement result. **`x402Version` in the body** matches the request and selects the schema (`1` = v1 fields, `2` = v2 fields).
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: "#/components/schemas/X402SettleResponseV1"
+                  - $ref: "#/components/schemas/X402SettleResponseV2"
+                discriminator:
+                  propertyName: x402Version
+                  mapping:
+                    "1": "#/components/schemas/X402SettleResponseV1"
+                    "2": "#/components/schemas/X402SettleResponseV2"
+        400:
+          $ref: "#/components/responses/BadRequestError"
+        403:
+          $ref: "#/components/responses/PermissionError"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
+        500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
+          $ref: "#/components/responses/DatabaseError"
+
+  /webhooks:
+    get:
+      tags:
+        - Webhooks
+        - List
+      description: Returns information about the webhooks system- event names that can trigger webhooks.
+      security:
+        - OAuth2ClientCredentials:
+          - read:api
+      responses:
+        200:
+          description: Returns an array of all event names that may trigger webhooks
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  events:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/EEventName"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
+        500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
+          $ref: "#/components/responses/DatabaseError"
+
+  /business/{businessId}/webhooks/triggers:
+    get:
+      tags:
+        - Webhooks
+        - Webhook Triggers
+        - List
+      description: Lists all webhook triggers for a business
+      parameters:
+        - name: businessId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/BusinessId"
+        - name: page
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/Page"
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/PageSize"
+      security:
+        - OAuth2ClientCredentials:
+          - read:api
+      responses:
+        200:
+          description: Returns a page of webhook triggers for the requested business
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/PagedResponse"
+                  - type: object
+                    properties:
+                      response:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/WebhookTrigger"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
+        500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
+          $ref: "#/components/responses/DatabaseError"
+    post:
+      tags:
+        - Webhooks
+        - Webhook Triggers
+        - Create
+      description: Create a new webhook trigger
+      parameters:
+        - name: businessId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/BusinessId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - endpointId
+                - eventNames
+                - transactionIds
+                - name
+              properties:
+                endpointId:
+                  type: string
+                  format: uuid
+                  description: The webhook endpoint ID to trigger
+                eventNames:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/EEventName"
+                  description: Event names that will trigger the webhook
+                contractMethodIds:
+                  type: array
+                  items:
+                    type: string
+                    format: uuid
+                  description: Which contract methods will trigger the webhook.
+                name:
+                  type: string
+                  description: Name for the trigger
+                description:
+                  type: string
+                  description: Description of the trigger
+      security:
+        - OAuth2ClientCredentials:
+          - read:api
+      responses:
+        200:
+          description: Returns the new WebhookTrigger
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WebhookTrigger"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
+        500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
+          $ref: "#/components/responses/DatabaseError"
+
+  /webhooks/triggers/{webhookTriggerId}:
+    put:
+      tags:
+        - Webhooks
+        - Webhook Triggers
+      description: Update an existing webhook trigger
+      parameters:
+        - name: webhookTriggerId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                endpointId:
+                  type: string
+                  format: uuid
+                eventNames:
+                  type: array
+                  items:
+                    $ref: "#/components/schemas/EEventName"
+                contractMethodIds:
+                  type: array
+                  items:
+                    type: string
+                    format: uuid
+                name:
+                  type: string
+                description:
+                  type: string
+      security:
+        - OAuth2ClientCredentials:
+          - read:api
+      responses:
+        200:
+          description: Returns the updated WebhookTrigger
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WebhookTrigger"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
+        500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
+          $ref: "#/components/responses/DatabaseError"
+    delete:
+      tags:
+        - Webhooks
+        - Webhook Triggers
+      description: Delete a webhook trigger
+      parameters:
+        - name: webhookTriggerId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      security:
+        - OAuth2ClientCredentials:
+          - read:api
+      responses:
+        200:
+          description: Success
           content:
             application/json:
               schema:
@@ -1869,16 +3163,331 @@ paths:
                 properties:
                   success:
                     type: boolean
-                  error:
-                    type: string
-                  txHash:
-                    type: string
-                  networkId:
-                    $ref: "#/components/schemas/EX402Network"
-                required:
-                  - success
-                  - networkId
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
         500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
+          $ref: "#/components/responses/DatabaseError"
+
+  /business/{businessId}/webhooks/endpoints:
+    get:
+      tags:
+        - Webhooks
+        - Webhook Endpoints
+        - List
+      description: Lists all webhook endpoints for a business
+      parameters:
+        - name: businessId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/BusinessId"
+        - name: page
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/Page"
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/PageSize"
+      security:
+        - OAuth2ClientCredentials:
+          - read:api
+      responses:
+        200:
+          description: Returns a page of webhook endpoints for the requested business
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/PagedResponse"
+                  - type: object
+                    properties:
+                      response:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/WebhookEndpoint"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
+        500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
+          $ref: "#/components/responses/DatabaseError"
+    post:
+      tags:
+        - Webhooks
+        - Webhook Endpoints
+        - Create
+      description: Create a new webhook endpoint
+      parameters:
+        - name: businessId
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/BusinessId"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - destinationUrl
+                - name
+              properties:
+                destinationUrl:
+                  type: string
+                  format: uri
+                  description: The URL to send the webhook to (http:// or https://)
+                name:
+                  type: string
+                  description: Name for the endpoint
+                description:
+                  type: string
+                  description: Description of the endpoint
+      security:
+        - OAuth2ClientCredentials:
+          - read:api
+      responses:
+        200:
+          description: Returns the new Webhook Endpoint
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WebhookEndpoint"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
+        500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
+          $ref: "#/components/responses/DatabaseError"
+
+  /webhooks/endpoints/{webhookEndpointId}:
+    get:
+      tags:
+        - Webhooks
+        - Webhook Endpoints
+      description: Gets a specific webhook endpoint
+      parameters:
+        - name: webhookEndpointId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      security:
+        - OAuth2ClientCredentials:
+          - read:api
+      responses:
+        200:
+          description: Returns webhook endpoint
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WebhookEndpoint"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
+        500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
+          $ref: "#/components/responses/DatabaseError"
+    put:
+      tags:
+        - Webhooks
+        - Webhook Endpoints
+      description: Update a webhook endpoint
+      parameters:
+        - name: webhookEndpointId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                description:
+                  type: string
+      security:
+        - OAuth2ClientCredentials:
+          - read:api
+      responses:
+        200:
+          description: Returns the updated webhook endpoint
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WebhookEndpoint"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
+        500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
+          $ref: "#/components/responses/DatabaseError"
+    delete:
+      tags:
+        - Webhooks
+        - Webhook Endpoints
+      description: Delete a webhook endpoint
+      parameters:
+        - name: webhookEndpointId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      security:
+        - OAuth2ClientCredentials:
+          - read:api
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
+        500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
+          $ref: "#/components/responses/DatabaseError"
+
+  /webhooks/endpoints/{webhookEndpointId}/rotate:
+    put:
+      tags:
+        - Webhooks
+        - Webhook Endpoints
+      description: Rotate the private key for a webhook endpoint
+      parameters:
+        - name: webhookEndpointId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      security:
+        - OAuth2ClientCredentials:
+          - read:api
+      responses:
+        200:
+          description: Returns the webhook endpoint with new public key
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/WebhookEndpoint"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
+        500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
+          $ref: "#/components/responses/DatabaseError"
+
+  /webhooks/endpoints/{webhookEndpointId}/webhooks:
+    get:
+      tags:
+        - Webhooks
+        - Webhook Endpoints
+        - List
+      description: Lists all generated webhooks for a particular endpoint. Webhooks are generated by a Webhook Trigger, and delivery may be attempted multiple times.
+      parameters:
+        - name: webhookEndpointId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: page
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/Page"
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/PageSize"
+      security:
+        - OAuth2ClientCredentials:
+          - read:api
+      responses:
+        200:
+          description: Returns a page of webhooks for the requested webhook endpoint
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/PagedResponse"
+                  - type: object
+                    properties:
+                      response:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/Webhook"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
+        500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
+          $ref: "#/components/responses/DatabaseError"
+
+  /webhooks/{webhookId}/attempts:
+    get:
+      tags:
+        - Webhooks
+        - Webhook Delivery Attempts
+        - List
+      description: Lists all delivery attempts for a particular webhook
+      parameters:
+        - name: webhookId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - name: page
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/Page"
+        - name: pageSize
+          in: query
+          required: false
+          schema:
+            $ref: "#/components/schemas/PageSize"
+      security:
+        - OAuth2ClientCredentials:
+          - read:api
+      responses:
+        200:
+          description: Returns a page of delivery attempts for the requested webhook
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: "#/components/schemas/PagedResponse"
+                  - type: object
+                    properties:
+                      response:
+                        type: array
+                        items:
+                          $ref: "#/components/schemas/WebhookDeliveryAttempt"
+        422:
+          $ref: "#/components/responses/UnprocessableEntityError"
+        500:
+          $ref: "#/components/responses/DatabaseError"
+        503:
           $ref: "#/components/responses/DatabaseError"
 
 components:
@@ -1893,14 +3502,320 @@ components:
             write:api: Write access to the API
 
   responses:
+    BadRequestError:
+      description: Bad request - invalid parameters or arguments
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          examples:
+            invalidParameters:
+              summary: Invalid Parameters
+              value:
+                type: "INVALID_PARAMETERS_ERROR"
+                message: "The provided parameters are invalid"
+                data: null
+                retryable: false
+            invalidType:
+              summary: Invalid Type
+              value:
+                type: "InvalidTypeError"
+                message: "Invalid type provided"
+                data: null
+                retryable: true
+            unauthorizedNonce:
+              summary: Unauthorized Nonce
+              value:
+                type: "UnauthorizedNonceError"
+                message: "The nonce provided is not authorized"
+                data: null
+                retryable: false
+    UnauthenticatedError:
+      description: Authentication required - no valid authentication token provided
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          examples:
+            missingToken:
+              summary: Missing Authentication Token
+              value:
+                type: "UnauthenticatedError"
+                message: "No authentication token provided or invalid"
+                data: null
+                retryable: false
+    ForbiddenError:
+      description: Forbidden - authentication token does not have permission to access this endpoint
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          examples:
+            insufficientPermissions:
+              summary: Insufficient Permissions
+              value:
+                type: "UnauthorizedError"
+                message: "Insufficient permissions for operation"
+                data: null
+                retryable: false
+            unknownEntity:
+              summary: Unknown Entity
+              value:
+                type: "UnknownEntityError"
+                message: "Unknown Object"
+                data: null
+                retryable: false
+            stripeError:
+              summary: Stripe Request Error
+              value:
+                type: "StripeRequestError"
+                message: "Stripe request failed"
+                data: null
+                retryable: false
+    NotFoundError:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          examples:
+            chainTransaction:
+              summary: Chain Transaction Not Found
+              value:
+                type: "ChainTransactionError"
+                message: "Transaction not found on chain"
+                data: null
+                retryable: false
+            unknownFunction:
+              summary: Unknown Function
+              value:
+                type: "ERR_UNKNOWN_FUNCTION"
+                message: "Function not found"
+                data: null
+                retryable: false
+            deserialization:
+              summary: Deserialization Error
+              value:
+                type: "DeserializationError"
+                message: "Failed to deserialize data"
+                data: null
+                retryable: false
+    UnprocessableEntityError:
+      description: Unprocessable entity - invalid API parameters
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          examples:
+            invalidApiParameters:
+              summary: Invalid API Parameters
+              value:
+                type: "InvalidApiParametersError"
+                message: "Parameter walletId should be of type string, but was given '123'"
+                data:
+                  parameterType: "string"
+                  parameterName: "walletId"
+                  parameterValue: 123
+                retryable: true
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          examples:
+            blockchainUnavailable:
+              summary: Blockchain Unavailable
+              value:
+                type: "BLOCKCHAIN_UNAVAILABLE"
+                message: "Blockchain service is currently unavailable"
+                data: null
+                retryable: false
+            transactionError:
+              summary: Transaction Error
+              value:
+                type: "TransactionError"
+                message: "Transaction failed"
+                data: null
+                retryable: true
+            databaseError:
+              summary: Database Error
+              value:
+                type: "ERR_DATABASE"
+                message: "Database operation failed"
+                data: null
+                retryable: true
+            ethereumReadError:
+              summary: Ethereum Read Error
+              value:
+                type: "EthereumReadError"
+                message: "Failed to read from Ethereum"
+                data: null
+                retryable: true
+            ethereumWriteError:
+              summary: Ethereum Write Error
+              value:
+                type: "EthereumWriteError"
+                message: "Failed to write to Ethereum"
+                data: null
+                retryable: true
+            insufficientFunds:
+              summary: Insufficient Funds
+              value:
+                type: "ERR_INSUFFICIENT_FUNDS"
+                message: "Insufficient funds for transaction"
+                data: null
+                retryable: false
+            invalidContract:
+              summary: Invalid Contract
+              value:
+                type: "InvalidContractError"
+                message: "Invalid contract address or ABI"
+                data: null
+                retryable: false
+            gasPriceError:
+              summary: Gas Price Error
+              value:
+                type: "ERR_GAS_PRICE"
+                message: "Failed to get gas price"
+                data: null
+                retryable: false
+            gasFeeDataError:
+              summary: Gas Fee Data Error
+              value:
+                type: "GasFeeDataError"
+                message: "Failed to get gas fee data"
+                data: null
+                retryable: true
+            retryError:
+              summary: Retry Error
+              value:
+                type: "RetryError"
+                message: "Operation failed after retries"
+                data: null
+                retryable: true
+            thirdPartyError:
+              summary: Third Party Error
+              value:
+                type: "ThirdPartyError"
+                message: "Third party service error"
+                data: null
+                retryable: true
+            redisError:
+              summary: Redis Error
+              value:
+                type: "RedisError"
+                message: "Redis operation failed"
+                data: null
+                retryable: true
+            queueError:
+              summary: Queue Error
+              value:
+                type: "QueueError"
+                message: "Queue operation failed"
+                data: null
+                retryable: false
+            webhookDeliveryError:
+              summary: Webhook Delivery Error
+              value:
+                type: "ERR_WEBHOOK_DELIVERY"
+                message: "Failed to deliver webhook"
+                data: null
+                retryable: false
+    BadGatewayError:
+      description: Bad gateway - external API error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          examples:
+            externalApiError:
+              summary: External API Error
+              value:
+                type: "ExternalApiError"
+                message: "External API request failed"
+                data: null
+                retryable: true
+    ServiceUnavailableError:
+      description: Service unavailable - database or service temporarily unavailable
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          examples:
+            databaseUnavailable:
+              summary: Database Unavailable
+              value:
+                type: "ERR_DATABASE"
+                message: "Database service is temporarily unavailable"
+                data:
+                  sourceCode: "ECONNREFUSED"
+                retryable: true
     InvalidError:
       description: Data is invalid
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
     PermissionError:
       description: The authentication token does not have permission to access this endpoint
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          examples:
+            unauthorized:
+              summary: Unauthorized Access
+              value:
+                type: "UnauthorizedError"
+                message: "Insufficient permissions for operation"
+                data: null
+                retryable: false
     DatabaseError:
       description: Database has encountered an error
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/ErrorResponse"
+          examples:
+            databaseError:
+              summary: Database Error
+              value:
+                type: "ERR_DATABASE"
+                message: "Database operation failed"
+                data:
+                  sourceCode: "ECONNREFUSED"
+                retryable: true
 
   schemas:
+    ErrorResponse:
+      description: Standard error response format for all API errors
+      type: object
+      properties:
+        type:
+          type: string
+          description: The error type code from ErrorCodes. This is a specific identifier for the error type.
+          example: "ERR_DATABASE"
+        message:
+          type: string
+          description: Human-readable error message describing what went wrong.
+          example: "Database operation failed"
+        data:
+          description: Additional error data. This can be null, an object with error-specific fields, or any other data structure that provides context about the error.
+          nullable: true
+          example:
+            parameterType: "string"
+            parameterName: "walletId"
+            parameterValue: 123
+        retryable:
+          type: boolean
+          description: Indicates whether the error is retryable. If true, the client may retry the request. If false, retrying will not help.
+          example: true
+      required:
+        - type
+        - message
+        - retryable
+
     PageSize:
       description: The size of the page to return. Defaults to 25
       type: integer
@@ -1955,6 +3870,169 @@ components:
           required:
             - deleted
         - $ref: "#/components/schemas/EntityBookKeepingWithoutDeleted"
+
+    EEventName:
+      type: string
+      description: Event names that can trigger webhooks
+      enum:
+        - TransactionExecutionFailure
+        - TransactionExecutionSuccess
+        - EscrowWalletLowBalanceDetected
+        - EscrowWalletDepositConfirmed
+        - BusinessUserCreated
+        - BusinessUserDeleted
+        - InvoiceCreated
+
+    EWebhookStatus:
+      type: string
+      description: The current status of the webhook
+      enum:
+        - Unsent
+        - Success
+        - Retrying
+        - Failed
+
+    WebhookEndpoint:
+      allOf:
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+              description: The WebhookEndpointId
+            destinationUrl:
+              type: string
+              format: uri
+              description: The URL for the endpoint
+            businessId:
+              type: string
+              format: uuid
+              nullable: true
+            userId:
+              type: string
+              format: uuid
+              nullable: true
+            name:
+              type: string
+            description:
+              type: string
+            publicKey:
+              type: string
+              description: Base64-encoded ED25519 public key for verifying webhook signatures
+            verified:
+              type: boolean
+            lastPing:
+              type: number
+              format: unix-timestamp
+              nullable: true
+            lastPingStatus:
+              type: boolean
+          required:
+            - id
+            - destinationUrl
+            - name
+            - description
+            - publicKey
+            - verified
+            - lastPingStatus
+        - $ref: "#/components/schemas/EntityBookKeeping"
+
+    WebhookTrigger:
+      allOf:
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            endpointId:
+              type: string
+              format: uuid
+              nullable: true
+            businessId:
+              type: string
+              format: uuid
+              nullable: true
+            userId:
+              type: string
+              format: uuid
+              nullable: true
+            name:
+              type: string
+            description:
+              type: string
+            events:
+              type: array
+              items:
+                $ref: "#/components/schemas/EEventName"
+            contractMethodIds:
+              type: array
+              items:
+                type: string
+                format: uuid
+            service:
+              type: string
+              nullable: true
+          required:
+            - id
+            - name
+            - description
+            - events
+        - $ref: "#/components/schemas/EntityBookKeeping"
+
+    Webhook:
+      allOf:
+        - type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            endpointId:
+              type: string
+              format: uuid
+            eventName:
+              type: string
+            content:
+              type: string
+              format: json
+            status:
+              $ref: "#/components/schemas/EWebhookStatus"
+          required:
+            - id
+            - endpointId
+            - eventName
+            - content
+            - status
+        - $ref: "#/components/schemas/EntityBookKeeping"
+
+    WebhookDeliveryAttempt:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        webhookId:
+          type: string
+          format: uuid
+        apiVersion:
+          type: integer
+        httpResponse:
+          type: integer
+        clientResponse:
+          type: string
+        signature:
+          type: string
+          format: byte
+        timestamp:
+          type: number
+          format: unix-timestamp
+      required:
+        - id
+        - webhookId
+        - apiVersion
+        - httpResponse
+        - clientResponse
+        - signature
+        - timestamp
     
     EX402Network:
       type: string
@@ -1962,6 +4040,70 @@ components:
       enum:
         - mainnet
         - sepolia
+
+    CAIP2Network:
+      type: string
+      description: CAIP-2 chain identifier (e.g. EIP-155 `eip155:8453` for Base)
+      example: eip155:84532
+
+    X402SettleResponseV1:
+      type: object
+      description: |
+        Returned when the request body `x402Version` is `1`. Aligns with [x402 v1 SettlementResponse](https://github.com/coinbase/x402/blob/main/specs/x402-specification-v1.md).
+      properties:
+        x402Version:
+          type: integer
+          enum: [1]
+          description: Always `1`; discriminates this response from v2.
+        success:
+          type: boolean
+        error:
+          type: string
+          nullable: true
+          description: Error message when settlement failed
+        txHash:
+          type: string
+          nullable: true
+          description: Transaction hash when broadcast; null when not available
+        networkId:
+          $ref: "#/components/schemas/EX402Network"
+          nullable: true
+          description: Legacy x402 network name for the chain
+      required:
+        - x402Version
+        - success
+
+    X402SettleResponseV2:
+      type: object
+      description: |
+        Returned when the request body `x402Version` is `2`. Aligns with [x402 v2 SettleResponse](https://github.com/coinbase/x402/blob/main/specs/x402-specification-v2.md).
+      properties:
+        x402Version:
+          type: integer
+          enum: [2]
+          description: Always `2`; discriminates this response from v1.
+        success:
+          type: boolean
+        errorReason:
+          type: string
+          nullable: true
+          description: Error reason when `success` is false
+        transaction:
+          type: string
+          nullable: true
+          description: Transaction hash (empty string when settlement failed in some clients; here may be null)
+        network:
+          $ref: "#/components/schemas/CAIP2Network"
+          nullable: true
+          description: Chain as CAIP-2 `eip155:&lt;chainId&gt;`
+        payer:
+          type: string
+          format: evm-address
+          nullable: true
+          description: Payer address from the payment authorization
+      required:
+        - x402Version
+        - success
 
     ETransactionStatus:
       type: string
@@ -1997,21 +4139,6 @@ components:
         - live
         - archived
         - both
-    
-    EWebhookStatus:
-      type: string
-      description: The current status of the webhook
-      enum:
-        - Unsent
-        - Success
-        - Retrying
-        - Failed
-
-    EEventName:
-      type: string
-      enum:
-        - TransactionFailure
-        - TransactionSuccess
         
     EChain:
       type: integer
@@ -2104,6 +4231,11 @@ components:
             isAdmin:
               type: boolean
               description: Whether or not the wallet is an admin wallet, used for internal purposes.
+            permit2AuthorizedContractAddresses:
+              type: array
+              items:
+                $ref: "#/components/schemas/ContractAddress"
+              description: The contract addresses of the tokens that the wallet is authorized to use Permit2 for.
             accountBalanceDetails:
               allOf:
                 - $ref: "#/components/schemas/AccountBalanceDetails"
@@ -2118,6 +4250,7 @@ components:
             - name
             - description
             - isAdmin
+            - permit2AuthorizedContractAddresses
         - $ref: "#/components/schemas/EntityBookKeepingWithoutDeleted"
         
     AccountBalanceDetails:
@@ -2627,7 +4760,13 @@ components:
       format: uuid
       description: Internal ID of the Contract Method object. Contract Methods are sometimes referred to as Endpoints. A Contract Method is a single method on a smart contract.
       example: 4b4bab2d-673d-4b91-8e09-f1402962cd3e
-
+    
+    DelegationId:
+      type: string
+      format: uuid
+      description: Internal ID of a Delegation object.
+      example: 4b4bab2d-673d-4b91-8e09-f1402962cd3e
+    
     TransactionId:
       type: string
       format: uuid
@@ -2795,7 +4934,7 @@ components:
           example: "0x1234567890abcdef"
 
     ERC7702Authorization:
-      description: A single authorization for an ERC-7702 transaction. It represents a single potential authorization from an EOA to a contract. The EOA must sign a message with the contract address, the chain ID, and a nonce. Authorizations are sticky, once a Contract Method has been executed with an authorization, future Contract Methods may be executed for the EOA using the authorized contract without a new authorization being submitted.
+      description: A single authorization for an ERC-7702 transaction. It represents a single potential delegation from an EOA to a contract. The EOA must sign a message with the contract address, the chain ID, and a nonce. Authorizations are sticky, once a Contract Method has been executed with an authorization, future Contract Methods may be executed for the EOA using the authorized contract without a new authorization being submitted.
       type: object
       properties:
         address:
@@ -2803,14 +4942,14 @@ components:
         nonce:
           type: string
           format: big-number-string
-          description: The authorization nonce. This starts at 0 and must be positive. The EOA must keep track of this nonce itself.
+          description: The delegation nonce. This starts at 0 and must be positive. The EOA must keep track of this nonce itself.
           example: "123400000000000000000"
         chainId:
           $ref: "#/components/schemas/EChain"
         signature:
           type: string
           format: hex-string
-          description: The signature of the authorization, from the EOA that is authorizing the contract at address.
+          description: The signature of the authorization, from the EOA that is delegating the authorization to the contract at address.
           example: "0x1234567890abcdef"
       required:
         - address
@@ -2830,7 +4969,7 @@ components:
               example: 8a6e0804-2bd0-4672-b79d-d97027f90720
             businessId:
               $ref: "#/components/schemas/BusinessId"
-            escrowWalletId:
+            walletId:
               $ref: "#/components/schemas/WalletId"
             delegatorAddress:
               type: string
@@ -2862,20 +5001,72 @@ components:
               description: Array of method names that the wallet can execute. If empty, all methods are allowed.
               example: ["mint", "transfer"]
             delegationData:
-              type: string
-              format: json-string
-              description: The actual Delegation object serialized as a JSON string. BigInts must be encoded as strings.
-              example: {"authority":"0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff","caveats":[],"delegate":"0x74847c451c3745fcdf4fd447a9fa5eef8a6791a9","delegator":"0x3e6a2f0CBA03d293B54c9fCF354948903007a798","salt":"0x","signature":"0x000007dc509f5f440bd07e2a51cb8dd135f170bc8886ccf24c35652d256d4f06501537e663fbb3b6e51ca640ad4791fb605ba7434d4d8a0a0a24bfd4d841e88f1c"}
+              $ref: "#/components/schemas/DelegationData"
           required:
             - id
             - businessId
-            - escrowWalletId
+            - walletId
             - startTime
             - endTime
             - contractAddresses
             - methods
             - delegationData
         - $ref: "#/components/schemas/EntityBookKeepingWithoutDeleted"
+
+    SignedDelegation:
+      description: Signed delegation object (MetaMask smart account kit / IDelegation format). Returned by the redelegate endpoint.
+      type: object
+      required:
+        - delegate
+        - delegator
+        - authority
+        - caveats
+        - salt
+        - signature
+      properties:
+        delegate:
+          $ref: "#/components/schemas/AccountAddress"
+          description: The delegate (recipient) address
+        delegator:
+          $ref: "#/components/schemas/AccountAddress"
+          description: The delegator (grantor) address
+        authority:
+          type: string
+          format: hex-string
+          description: The authority hash
+        caveats:
+          type: array
+          items:
+            type: object
+            required:
+              - enforcer
+              - terms
+              - args
+            properties:
+              enforcer:
+                $ref: "#/components/schemas/ContractAddress"
+              terms:
+                type: string
+                format: hex-string
+              args:
+                type: string
+                format: hex-string
+        salt:
+          oneOf:
+            - type: string
+              format: hex-string
+            - type: integer
+              format: int64
+        signature:
+          type: string
+          format: hex-string
+          description: The delegation signature
+
+    DelegationData:
+      type: string
+      format: json-string
+      description: The actual Delegation object serialized as a JSON string. BigInts must be encoded as strings.
+      example: {"authority":"0xffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff","caveats":[],"delegate":"0x74847c451c3745fcdf4fd447a9fa5eef8a6791a9","delegator":"0x3e6a2f0CBA03d293B54c9fCF354948903007a798","salt":"0x","signature":"0x000007dc509f5f440bd07e2a51cb8dd135f170bc8886ccf24c35652d256d4f06501537e663fbb3b6e51ca640ad4791fb605ba7434d4d8a0a0a24bfd4d841e88f1c"}
 
     ChainInfo:
       description: Information about a chain supported by 1Shot API
@@ -2931,6 +5122,21 @@ components:
           example: "2000000000"
           nullable: true
 
+    ContractCodeInfo:
+      description: Result of inspecting bytecode at an address, including EIP-7702 delegation when applicable.
+      type: object
+      required:
+        - isContract
+        - eip7702ImplementationAddress
+      properties:
+        isContract:
+          type: boolean
+          description: True if `eth_getCode` returned non-empty bytecode at this address.
+        eip7702ImplementationAddress:
+          $ref: "#/components/schemas/ContractAddress"
+          nullable: true
+          description: When bytecode is exactly the EIP-7702 delegation designator plus a 20-byte implementation address, that implementation contract; otherwise null.
+
     LogDescription:
       description: A description of a log event
       type: object
@@ -2950,3 +5156,124 @@ components:
         - signature
         - topic
         - args
+
+    ContractEventId:
+      type: string
+      format: uuid
+      description: The unique identifier for a contract event definition
+      example: "8a6e0804-2bd0-4672-b79d-d97027f90720"
+
+    ContractEvent:
+      type: object
+      properties:
+        id:
+          $ref: "#/components/schemas/ContractEventId"
+        businessId:
+          $ref: "#/components/schemas/BusinessId"
+        chainId:
+          $ref: "#/components/schemas/EChain"
+        contractAddress:
+          $ref: "#/components/schemas/ContractAddress"
+        name:
+          type: string
+          description: Human-readable name for the event definition
+          example: "Transfer Event"
+        description:
+          type: string
+          description: Description of what this event represents
+          example: "Monitors token transfer events"
+        eventName:
+          type: string
+          description: The exact name of the event as defined in the contract ABI
+          example: "Transfer"
+        topicHash:
+          type: string
+          description: The keccak256 hash of the event signature
+          example: "0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef"
+        topics:
+          type: array
+          description: Array of event parameter definitions
+          items:
+            $ref: "#/components/schemas/Topic"
+        updated:
+          type: integer
+          format: int64
+          description: Unix timestamp when the event definition was last updated
+        created:
+          type: integer
+          format: int64
+          description: Unix timestamp when the event definition was created
+      required:
+        - id
+        - businessId
+        - chainId
+        - contractAddress
+        - name
+        - description
+        - eventName
+        - topicHash
+        - topics
+        - updated
+        - created
+
+    Topic:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the event parameter
+          example: "from"
+        indexed:
+          type: boolean
+          description: Whether this parameter is indexed in the event
+          example: true
+      required:
+        - name
+        - indexed
+
+    ContractEventLog:
+      type: object
+      properties:
+        eventName:
+          type: string
+          description: Name of the event that was emitted
+          example: "Transfer"
+        blockNumber:
+          type: integer
+          description: Block number where the event was emitted
+          example: 12345678
+        blockTimestamp:
+          type: number
+          format: unix-timestamp
+          description: The block timestamp when the event was emitted
+          example: 1659485172
+        transactionHash:
+          type: string
+          description: Hash of the transaction that emitted the event
+          example: "0x1234567890abcdef..."
+        logIndex:
+          type: integer
+          description: Index of the log within the transaction
+          example: 0
+        removed:
+          type: boolean
+          description: Whether this log was removed due to chain reorganization
+          example: false
+        topics:
+          type: object
+          description: Decoded event arguments by parameter name
+          additionalProperties:
+            type: string
+            description: Decoded value for the event parameter
+          example:
+            from: "0x1234567890123456789012345678901234567890"
+            to: "0x0987654321098765432109876543210987654321"
+            value: "1000000000000000000"
+      required:
+        - eventName
+        - blockNumber
+        - blockTimestamp
+        - transactionHash
+        - logIndex
+        - removed
+        - topics
