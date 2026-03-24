@@ -63,6 +63,12 @@ Try running our `x402-express demo <https://github.com/1Shot-API/x402/tree/main/
     apiSecret: process.env.ONESHOT_API_SECRET,
    });
 
+   const evmAddress = process.env.EVM_ADDRESS as `0x${string}`;
+   if (!evmAddress) {
+     console.error("Missing required environment variable: EVM_ADDRESS");
+     process.exit(1);
+   }
+
    app.use(
      paymentMiddleware(
        {

@@ -516,6 +516,12 @@
 <span class="w"> </span><span class="nx">apiSecret</span><span class="o">:</span><span class="w"> </span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">ONESHOT_API_SECRET</span><span class="p">,</span>
 <span class="p">});</span>
 
+<span class="kd">const</span><span class="w"> </span><span class="nx">evmAddress</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">EVM_ADDRESS</span><span class="w"> </span><span class="kr">as</span><span class="w"> </span><span class="sb">`0x</span><span class="si">${</span><span class="nx">string</span><span class="si">}</span><span class="sb">`</span><span class="p">;</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="nx">evmAddress</span><span class="p">)</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">error</span><span class="p">(</span><span class="s2">&quot;Missing required environment variable: EVM_ADDRESS&quot;</span><span class="p">);</span>
+<span class="w">  </span><span class="nx">process</span><span class="p">.</span><span class="nx">exit</span><span class="p">(</span><span class="mf">1</span><span class="p">);</span>
+<span class="p">}</span>
+
 <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span>
 <span class="w">  </span><span class="nx">paymentMiddleware</span><span class="p">(</span>
 <span class="w">    </span><span class="p">{</span>
