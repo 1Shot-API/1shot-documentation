@@ -504,7 +504,11 @@
 </pre></div>
 </div>
 <p>This package exports <cite>create1ShotAPIFacilitatorClient</cite> which can be used with the official <a class="reference external" href="https://www.npmjs.com/package/&#64;x402/express">&#64;x402/express</a> package to create a x402 facilitator client.</p>
-<p>Try running our <a class="reference external" href="https://github.com/1Shot-API/x402/tree/main/examples/typescript/servers/1shotapi-example">x402-express demo</a> or check out the code example below:</p>
+<p>Try running our <a class="reference external" href="https://github.com/1Shot-API/x402/tree/main/examples/typescript/servers/1shotapi-example">x402-express demo</a> or check out the code example below.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>For <strong>browser-based</strong> agent wallets, we recommend configuring your x402 resource endpoints so they are not blocked by restrictive cross-origin rules—for example by disabling CORS middleware that denies third-party origins, or by setting permissive <code class="docutils literal notranslate"><span class="pre">Access-Control-Allow-*</span></code> headers on those routes. Otherwise the browser will prevent client-side code from reaching the resources needed for the x402 flow.</p>
+</div>
 <div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="k">import</span><span class="w"> </span><span class="nx">express</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;express&quot;</span><span class="p">;</span>
 <span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">paymentMiddleware</span><span class="p">,</span><span class="w"> </span><span class="nx">x402ResourceServer</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@x402/express&quot;</span><span class="p">;</span>
 <span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">ExactEvmScheme</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@x402/evm/exact/server&quot;</span><span class="p">;</span>

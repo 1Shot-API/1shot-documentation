@@ -48,7 +48,11 @@ You can install the facilitator package for node with your package manager of ch
 
 This package exports `create1ShotAPIFacilitatorClient` which can be used with the official `@x402/express <https://www.npmjs.com/package/@x402/express>`_ package to create a x402 facilitator client.
 
-Try running our `x402-express demo <https://github.com/1Shot-API/x402/tree/main/examples/typescript/servers/1shotapi-example>`_ or check out the code example below:
+Try running our `x402-express demo <https://github.com/1Shot-API/x402/tree/main/examples/typescript/servers/1shotapi-example>`_ or check out the code example below.
+
+.. note::
+
+   For **browser-based** agent wallets, we recommend configuring your x402 resource endpoints so they are not blocked by restrictive cross-origin rules—for example by disabling CORS middleware that denies third-party origins, or by setting permissive ``Access-Control-Allow-*`` headers on those routes. Otherwise the browser will prevent client-side code from reaching the resources needed for the x402 flow.
 
 .. code-block:: javascript
 
