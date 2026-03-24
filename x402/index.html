@@ -479,8 +479,14 @@
 <iframe allowfullscreen="true" src="https://www.youtube.com/embed/YxydlAkSZmU" style="border: 0; height: 345px; width: 560px">
 </iframe></div><br /><section id="x402">
 <h1>x402<a class="headerlink" href="#x402" title="Link to this heading">#</a></h1>
-<p>1Shot API offers special API endpoints for facilitating <a class="reference external" href="https://x402.org">x402</a> payments, check out the <a class="reference external" href="/api/openapi.html#operations-tag-x402">OpenAPI specification</a> for the x402 tag.</p>
-<p>1Shot API can process x402 payments for any EIP-3009 compatible token on any of the supported EVM networks you have a provisioned <a class="reference external" href="/basics/wallets.html">server wallet</a> on. Be sure to deposit sufficient gas funds into your server wallet to cover the transaction costs of the payment transactions (the <a class="reference external" href="https://1shotapi.com/gas-station">1Shot API gas station</a> is an easy way to convert USDC into gas on any chain you might have a server wallet on).</p>
+<p>1Shot API offers special API endpoints for facilitating version 1 and 2 <a class="reference external" href="https://x402.org">x402</a> payments, check out the <a class="reference external" href="/api/openapi.html#operations-tag-x402">OpenAPI specification</a> for the x402 tag.</p>
+<p>1Shot API can process x402 payments for any EIP-3009 compatible token on any of the supported EVM networks you have a provisioned <a class="reference external" href="/basics/wallets.html">server wallet</a> on.</p>
+<ol class="arabic simple">
+<li><p>Be sure to deposit sufficient gas funds into your server wallet to cover the transaction costs of the payment transactions.</p></li>
+<li><p>Import the <cite>transferWithAuthorization</cite> method for your target token into your 1Shot API account. For example <a class="reference external" href="https://app.1shotapi.com/1shot-prompts/e087662d-154a-4810-bebf-327a950e2414">USDC on Base</a>.</p></li>
+<li><p>Provision an <a class="reference external" href="https://app.1shotapi.com/api-keys">API Key and Secret</a> for your 1Shot API account.</p></li>
+<li><p>Integrate the 1Shot API x402 endpoints into your application either manually or using your favorite AI-assisted development tool.</p></li>
+</ol>
 <section id="configuring-x402-payment-tokens">
 <h2>Configuring x402 Payment Tokens<a class="headerlink" href="#configuring-x402-payment-tokens" title="Link to this heading">#</a></h2>
 <img alt="Importing an x402 token" class="align-center" src="../_images/x402-token-import.gif" />
@@ -497,62 +503,44 @@
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>npm<span class="w"> </span>install<span class="w"> </span>@1shotapi/x402-facilitator
 </pre></div>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>The canonical <a class="reference external" href="https://www.npmjs.com/package/x402">x402 package</a> from Coinbase Developer Platform is a dependency of middleware packages like <a class="reference external" href="https://www.npmjs.com/package/x402-express">x402-express</a> and may not currently support the chain you want to use for payments. 1Shot API publishes a shim package, <a class="reference external" href="https://www.npmjs.com/package/&#64;1shotapi/x402">&#64;1shotapi/x402</a>, that can be used as an override to add support for additional chains. Install it in your project, <code class="docutils literal notranslate"><span class="pre">pnpm</span> <span class="pre">add</span> <span class="pre">x402&#64;npm:&#64;1shotapi/x402</span></code>, then add the override to your <code class="docutils literal notranslate"><span class="pre">package.json</span></code>:</p>
-<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="nt">&quot;pnpm&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;overrides&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">    </span><span class="nt">&quot;x402&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;@1shotapi/x402@^0.1.1&quot;</span>
-<span class="w">  </span><span class="p">}</span>
-<span class="p">}</span>
-</pre></div>
-</div>
-</div>
-<p>This package exports two components:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">facilitator</span></code>: A <code class="docutils literal notranslate"><span class="pre">FacilitatorConfig</span></code> object used by x402 middleware packages; reads 1Shot API credentials from environment variables.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">createFacilitatorConfig</span></code>: A helper function which creates a <code class="docutils literal notranslate"><span class="pre">FacilitatorConfig</span></code> object and takes 1Shot API credentials as parameters.</p></li>
-</ul>
-<p>Try running our <a class="reference external" href="https://github.com/1Shot-API/1Shot-API-Examples/tree/main/typescript/x402-server">x402-express demo</a> or check out the code example below:</p>
-<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">config</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;dotenv&quot;</span><span class="p">;</span>
-<span class="k">import</span><span class="w"> </span><span class="nx">express</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;express&quot;</span><span class="p">;</span>
-<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">paymentMiddleware</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;x402-express&quot;</span><span class="p">;</span>
-<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">facilitator</span><span class="p">,</span><span class="w"> </span><span class="nx">createFacilitatorConfig</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@1shotapi/x402-facilitator&quot;</span><span class="p">;</span>
-<span class="nx">config</span><span class="p">();</span>
+<p>This package exports <cite>create1ShotAPIFacilitatorClient</cite> which can be used with the official <a class="reference external" href="https://www.npmjs.com/package/&#64;x402/express">&#64;x402/express</a> package to create a x402 facilitator client.</p>
+<p>Try running our <a class="reference external" href="https://github.com/1Shot-API/x402/tree/main/examples/typescript/servers/1shotapi-example">x402-express demo</a> or check out the code example below:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="k">import</span><span class="w"> </span><span class="nx">express</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;express&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">paymentMiddleware</span><span class="p">,</span><span class="w"> </span><span class="nx">x402ResourceServer</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@x402/express&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">ExactEvmScheme</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@x402/evm/exact/server&quot;</span><span class="p">;</span>
+<span class="k">import</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">create1ShotAPIFacilitatorClient</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="kr">from</span><span class="w"> </span><span class="s2">&quot;@1shotapi/x402-facilitator&quot;</span><span class="p">;</span>
 
-<span class="kd">const</span><span class="w"> </span><span class="nx">facilitatorConfig</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">createFacilitatorConfig</span><span class="p">(</span>
-<span class="w">  </span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">ONESHOT_API_KEY</span><span class="o">!</span><span class="p">,</span>
-<span class="w">  </span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">ONESHOT_API_SECRET</span><span class="o">!</span><span class="p">,</span>
-<span class="p">);</span>
-
-<span class="c1">// Or use environment variables implicitly</span>
-<span class="c1">// const facilitatorConfig = facilitator;</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">express</span><span class="p">();</span>
+<span class="kd">const</span><span class="w"> </span><span class="nx">facilitatorClient</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nx">create1ShotAPIFacilitatorClient</span><span class="p">({</span>
+<span class="w"> </span><span class="nx">apiKey</span><span class="o">:</span><span class="w"> </span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">ONESHOT_API_KEY</span><span class="p">,</span>
+<span class="w"> </span><span class="nx">apiSecret</span><span class="o">:</span><span class="w"> </span><span class="nx">process</span><span class="p">.</span><span class="nx">env</span><span class="p">.</span><span class="nx">ONESHOT_API_SECRET</span><span class="p">,</span>
+<span class="p">});</span>
 
 <span class="nx">app</span><span class="p">.</span><span class="nx">use</span><span class="p">(</span>
 <span class="w">  </span><span class="nx">paymentMiddleware</span><span class="p">(</span>
-<span class="w">   </span><span class="nx">payTo</span><span class="p">,</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">      </span><span class="s2">&quot;GET /weather&quot;</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">        </span><span class="c1">// USDC amount in dollars</span>
-<span class="w">        </span><span class="nx">price</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;$0.001&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="c1">// network: &quot;base&quot; // uncomment for Base mainnet</span>
-<span class="w">        </span><span class="nx">network</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;base-sepolia&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="nx">config</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">          </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Access to weather data&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="nx">mimeType</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
-<span class="w">       </span><span class="p">},</span>
-<span class="w">      </span><span class="p">},</span>
-<span class="w">        </span><span class="nx">config</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
-<span class="w">          </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Access to premium content&quot;</span><span class="p">,</span>
-<span class="w">          </span><span class="nx">mimeType</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
-<span class="w">        </span><span class="p">},</span>
-<span class="w">        </span><span class="c1">// network: &quot;base&quot; // uncomment for Base mainnet</span>
-<span class="w">        </span><span class="nx">network</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;base-sepolia&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">accepts</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="nx">scheme</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;exact&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">price</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;$0.001&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">network</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;eip155:84532&quot;</span><span class="p">,</span><span class="w"> </span><span class="nx">payTo</span><span class="o">:</span><span class="w"> </span><span class="nx">evmAddress</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="nx">description</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;Weather data&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="nx">mimeType</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;application/json&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="p">},</span>
 <span class="w">    </span><span class="p">},</span>
-<span class="w">    </span><span class="nx">facilitatorConfig</span><span class="p">,</span>
-<span class="w">  </span><span class="p">),</span>
+<span class="w">   </span><span class="ow">new</span><span class="w"> </span><span class="nx">x402ResourceServer</span><span class="p">(</span><span class="nx">facilitatorClient</span><span class="p">).</span><span class="nx">register</span><span class="p">(</span><span class="s2">&quot;eip155:84532&quot;</span><span class="p">,</span><span class="w"> </span><span class="ow">new</span><span class="w"> </span><span class="nx">ExactEvmScheme</span><span class="p">()),</span>
+<span class="w"> </span><span class="p">),</span>
 <span class="p">);</span>
+
+<span class="nx">app</span><span class="p">.</span><span class="nx">get</span><span class="p">(</span><span class="s2">&quot;/weather&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="nx">_</span><span class="p">,</span><span class="w"> </span><span class="nx">res</span><span class="p">)</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">res</span><span class="p">.</span><span class="nx">send</span><span class="p">({</span>
+<span class="w">    </span><span class="nx">report</span><span class="o">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nx">weather</span><span class="o">:</span><span class="w"> </span><span class="s2">&quot;sunny&quot;</span><span class="p">,</span>
+<span class="w">      </span><span class="nx">temperature</span><span class="o">:</span><span class="w"> </span><span class="mf">70</span><span class="p">,</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">  </span><span class="p">});</span>
+<span class="p">});</span>
+
+<span class="nx">app</span><span class="p">.</span><span class="nx">listen</span><span class="p">(</span><span class="mf">4021</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="p">=&gt;</span><span class="w"> </span><span class="p">{</span>
+<span class="w">  </span><span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="sb">`Server listening at http://localhost:</span><span class="si">${</span><span class="mf">4021</span><span class="si">}</span><span class="sb">`</span><span class="p">);</span>
+<span class="p">});</span>
 </pre></div>
 </div>
 </section>

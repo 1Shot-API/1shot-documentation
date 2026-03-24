@@ -8,9 +8,14 @@
 x402
 =====
 
-1Shot API offers special API endpoints for facilitating `x402 <https://x402.org>`_ payments, check out the `OpenAPI specification </api/openapi.html#operations-tag-x402>`_ for the x402 tag. 
+1Shot API offers special API endpoints for facilitating version 1 and 2 `x402 <https://x402.org>`_ payments, check out the `OpenAPI specification </api/openapi.html#operations-tag-x402>`_ for the x402 tag. 
 
-1Shot API can process x402 payments for any EIP-3009 compatible token on any of the supported EVM networks you have a provisioned `server wallet </basics/wallets.html>`_ on. Be sure to deposit sufficient gas funds into your server wallet to cover the transaction costs of the payment transactions (the `1Shot API gas station <https://1shotapi.com/gas-station>`_ is an easy way to convert USDC into gas on any chain you might have a server wallet on).
+1Shot API can process x402 payments for any EIP-3009 compatible token on any of the supported EVM networks you have a provisioned `server wallet </basics/wallets.html>`_ on. 
+
+1. Be sure to deposit sufficient gas funds into your server wallet to cover the transaction costs of the payment transactions. 
+2. Import the `transferWithAuthorization` method for your target token into your 1Shot API account. For example `USDC on Base <https://app.1shotapi.com/1shot-prompts/e087662d-154a-4810-bebf-327a950e2414>`_. 
+3. Provision an `API Key and Secret <https://app.1shotapi.com/api-keys>`_ for your 1Shot API account.
+4. Integrate the 1Shot API x402 endpoints into your application either manually or using your favorite AI-assisted development tool.
 
 Configuring x402 Payment Tokens
 --------------------------------
@@ -40,64 +45,46 @@ You can install the facilitator package for node with your package manager of ch
 
     npm install @1shotapi/x402-facilitator
 
-.. note::
 
-    The canonical `x402 package <https://www.npmjs.com/package/x402>`_ from Coinbase Developer Platform is a dependency of middleware packages like `x402-express <https://www.npmjs.com/package/x402-express>`_ and may not currently support the chain you want to use for payments. 1Shot API publishes a shim package, `@1shotapi/x402 <https://www.npmjs.com/package/@1shotapi/x402>`_, that can be used as an override to add support for additional chains. Install it in your project, ``pnpm add x402@npm:@1shotapi/x402``, then add the override to your ``package.json``:
+This package exports `create1ShotAPIFacilitatorClient` which can be used with the official `@x402/express <https://www.npmjs.com/package/@x402/express>`_ package to create a x402 facilitator client.
 
-    .. code-block:: json
-
-        "pnpm": {
-          "overrides": {
-            "x402": "@1shotapi/x402@^0.1.1"
-          }
-        }
-
-
-This package exports two components: 
-
-* ``facilitator``: A ``FacilitatorConfig`` object used by x402 middleware packages; reads 1Shot API credentials from environment variables.
-* ``createFacilitatorConfig``: A helper function which creates a ``FacilitatorConfig`` object and takes 1Shot API credentials as parameters.
-
-Try running our `x402-express demo <https://github.com/1Shot-API/1Shot-API-Examples/tree/main/typescript/x402-server>`_ or check out the code example below:
+Try running our `x402-express demo <https://github.com/1Shot-API/x402/tree/main/examples/typescript/servers/1shotapi-example>`_ or check out the code example below:
 
 .. code-block:: javascript
 
-   import { config } from "dotenv";
    import express from "express";
-   import { paymentMiddleware } from "x402-express";
-   import { facilitator, createFacilitatorConfig } from "@1shotapi/x402-facilitator";
-   config();
+   import { paymentMiddleware, x402ResourceServer } from "@x402/express";
+   import { ExactEvmScheme } from "@x402/evm/exact/server";
+   import { create1ShotAPIFacilitatorClient } from "@1shotapi/x402-facilitator";
 
-   const facilitatorConfig = createFacilitatorConfig(
-     process.env.ONESHOT_API_KEY!,
-     process.env.ONESHOT_API_SECRET!,
-   );
-
-   // Or use environment variables implicitly
-   // const facilitatorConfig = facilitator;
+   const app = express();
+   const facilitatorClient = create1ShotAPIFacilitatorClient({
+    apiKey: process.env.ONESHOT_API_KEY,
+    apiSecret: process.env.ONESHOT_API_SECRET,
+   });
 
    app.use(
      paymentMiddleware(
-      payTo,
        {
          "GET /weather": {
-           // USDC amount in dollars
-           price: "$0.001",
-           // network: "base" // uncomment for Base mainnet
-           network: "base-sepolia",
-           config: {
-             description: "Access to weather data",
-             mimeType: "application/json",
-          },
-         },
-           config: {
-             description: "Access to premium content",
-             mimeType: "application/json",
-           },
-           // network: "base" // uncomment for Base mainnet
-           network: "base-sepolia",
+           accepts: { scheme: "exact", price: "$0.001", network: "eip155:84532", payTo: evmAddress },
+           description: "Weather data",
+           mimeType: "application/json",
          },
        },
-       facilitatorConfig,
-     ),
+      new x402ResourceServer(facilitatorClient).register("eip155:84532", new ExactEvmScheme()),
+    ),
    );
+
+   app.get("/weather", (_, res) => {
+     res.send({
+       report: {
+         weather: "sunny",
+         temperature: 70,
+       },
+     });
+   });
+
+   app.listen(4021, () => {
+     console.log(`Server listening at http://localhost:${4021}`);
+   });
