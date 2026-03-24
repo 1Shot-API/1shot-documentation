@@ -29,7 +29,7 @@ Welcome to 1Shot API
 
 `1Shot API <https://1shotapi.com>`_ is a full-stack web3 infrastructure platform that lets you bring reliable onchain agents, workflows and products to market fast with account abstraction, server wallets and consumer stablecoin payments. 1Shot API offers MCP capabilities to connect to the most popular agentic coding tools like Cursor or Replit to prompt your way to a production-ready onchain application or agent.
 
-The fastest way to get started is to connect to 1Shot API's `MCP </prompts/index.html>`_ server to your favorite agentic development environment like Cursor or Replit. The coding agent will handle setting up server wallets and importing the necessary smart contract methods into your account.
+The fastest way to get started is to install the `skills library <https://github.com/1Shot-API/skills>`_ and connect to 1Shot API's `MCP </prompts/index.html>`_ server to your favorite agentic development environment like Cursor or Replit. The coding agent will handle setting up server wallets and importing the necessary smart contract methods into your account.
 
 Getting Started
 ----------------------------------
@@ -48,7 +48,7 @@ Start by creating a free `1Shot API account <https://app.1shotapi.com>`_. Next, 
 
     .. grid-item-card:: 2. AI-Driven Setup 🤖
         :link: /prompts/index.html
-        :link-alt: Using the 1Shot Prompts MCP server to set up your 1Shot API account.
+        :link-alt: Using the 1Shot skills MCP server to set up your 1Shot API account.
         :columns: 4
 
         Connect 1Shot API to your favorite AI coding environment.

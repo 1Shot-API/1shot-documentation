@@ -10,7 +10,7 @@ x402
 
 1Shot API offers special API endpoints for facilitating version 1 and 2 `x402 <https://x402.org>`_ payments, check out the `OpenAPI specification </api/openapi.html#operations-tag-x402>`_ for the x402 tag. 
 
-1Shot API can process x402 payments for any EIP-3009 compatible token on any of the supported EVM networks you have a provisioned `server wallet </basics/wallets.html>`_ on. 
+1Shot API can process x402 payments for any EIP-3009 compatible token on any of the supported EVM networks where you have provisioned and funded a `server wallet </basics/wallets.html>`_. 
 
 1. Be sure to deposit sufficient gas funds into your server wallet to cover the transaction costs of the payment transactions. 
 2. Import the `transferWithAuthorization` method for your target token into your 1Shot API account. For example `USDC on Base <https://app.1shotapi.com/1shot-prompts/e087662d-154a-4810-bebf-327a950e2414>`_. 
