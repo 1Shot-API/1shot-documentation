@@ -39,14 +39,14 @@ Using 1Shot API to Facilitate x402 Payments
 
 1Shot API provides a simple npm package for integrating x402 payments into your node server application that is compatible with the `Coinbase x402 <https://github.com/coinbase/x402>`_ npm package suite. 
 
-You can install the facilitator package for node with your package manager of choice:
+You can install the `facilitator package <https://www.npmjs.com/package/@1shotapi/x402-facilitator>`_ for node with your package manager of choice:
 
 .. code-block:: bash
 
     npm install @1shotapi/x402-facilitator
 
 
-This package exports `create1ShotAPIFacilitatorClient` which can be used with the official `@x402/express <https://www.npmjs.com/package/@x402/express>`_ package to create a x402 facilitator client.
+This package exports ``create1ShotAPIFacilitatorClient`` which can be used with the official `@x402/express <https://www.npmjs.com/package/@x402/express>`_ package to create a x402 facilitator client.
 
 Try running our `x402-express demo <https://github.com/1Shot-API/x402/tree/main/examples/typescript/servers/1shotapi-example>`_ or check out the code example below.
 
