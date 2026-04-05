@@ -7,7 +7,7 @@
 # https://www.sphinx-doc.org/en/master/usage/configuration.html#project-information
 
 project = '1Shot API'
-copyright = '2025, 1Shot API, Inc.'
+copyright = '2026, 1Shot API, Inc.'
 author = '1Shot API, Inc.'
 release = '1.0.0'
 
