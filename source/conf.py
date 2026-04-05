@@ -26,7 +26,7 @@ templates_path = ['_templates']
 exclude_patterns = []
 
 # -- Sphinx Google Analytics options --------------------------------------
-googleanalytics_id = "G-WNFJCLZDV3"
+googleanalytics_id = "G-MCWRCDN77E"
 
 # -- Sphinx-copybutton options ---------------------------------------------
 # Exclude copy button from appearing over notebook cell numbers by using :not()
